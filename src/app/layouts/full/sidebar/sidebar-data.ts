@@ -49,6 +49,12 @@ export const navItems: NavItem[] = [
     route: '/ui-components/tables',
   },
   {
+    displayName: 'Crafts',
+    iconName: 'solar:tablet-line-duotone',
+    //crear componente - catalogo
+    route: '',
+  },
+  {
     navCap: 'Auth',
     divider: true
   },

@@ -41,6 +41,10 @@ export const UiComponentsRoutes: Routes = [
         path: 'tables',
         component: AppTablesComponent,
       },
+      {
+        path: 'tables1',
+        component: AppTablesComponent,
+      },
     ],
   },
 ];
