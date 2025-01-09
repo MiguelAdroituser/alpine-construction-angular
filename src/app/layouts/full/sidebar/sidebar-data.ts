@@ -10,6 +10,11 @@ export const navItems: NavItem[] = [
     route: '/dashboard',
   },
   {
+    displayName: 'Crafts',
+    iconName: 'solar:widget-add-line-duotone',
+    route: '/crafts',
+  },
+  {
     navCap: 'Ui Components',
     divider: true
   },
@@ -52,7 +57,7 @@ export const navItems: NavItem[] = [
     displayName: 'Crafts',
     iconName: 'solar:tablet-line-duotone',
     //crear componente - catalogo
-    route: '',
+    route: '/ui-components/crafts',
   },
   {
     navCap: 'Auth',
