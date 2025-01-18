@@ -15,16 +15,6 @@ export class ApiService<T>{
 
     constructor(private http: HttpClient) { }
 
-/*     fetchData(controller:string,skip: number, limit: number, filters: string, relations?: string): Observable<any> {
-        let params = new HttpParams();
-        if (skip != null) params = params.set('skip', skip.toString());
-        if (limit != null) params = params.set('limit', limit.toString());
-        if (filters != null) params = params.set('filters', filters);
-        if (relations != null) params = params.set('relations', relations.toString());
-
-        return this.http.get<T[]>(`${this.apiUrl}${controller}?${params}`);
-    } */
-
     create(controller:string,dto: T): Observable<T> {
         return this.http.post<T>(`${this.apiUrl}${controller}`, dto);
     }
@@ -39,16 +29,8 @@ export class ApiService<T>{
     delete(controller:string,id: string): Observable<any> {
         return this.http.delete<T>(`${this.apiUrl}${controller}/${id}`);
     }
-
    
     findAll(controller: string): Observable<any> {
-        /* let params = new HttpParams();
-
-        // Codifica el objeto QueryFilter como un string JSON
-        const filterJson = JSON.stringify(queryFilter);
-        params = params.set('filters', filterJson); */
-
-        // return this.http.get<T[]>(`${this.apiUrl}${controller}?${params}`);
         return this.http.get<T[]>(`${this.apiUrl}${controller}`);
     }
     callPostApi(url:string,params?:HttpParams,data?:any):Observable<any>{

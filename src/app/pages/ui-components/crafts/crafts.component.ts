@@ -71,6 +71,7 @@ export class CraftsComponent implements OnInit{
   ngOnInit(): void {
     this.tst();
     // this.tst2();
+    this.updatetst2();
   }
   
   async tst(){
@@ -91,6 +92,20 @@ export class CraftsComponent implements OnInit{
       "description": "A handcrafted wooden sculpture perfect for modern interior decoration."
     }
     const resps = await this.apiservice.create('crafts/create', data).toPromise();
+    console.log({resps})
+  }
+  
+  async updatetst2() {
+    const data = {
+      "name": "Wooden 3 Sculpture",
+      "area": "Interior Design 2",
+      "price": 1200,
+      "Dimensions": "2m x 1.5m x 0.5m",
+      "materialUsed": "Oak Wood, Resin",
+      "leadTime": "6 weeks",
+      "description": "A handcrafted wooden sculpture perfect for modern interior decoration."
+    }
+    const resps = await this.apiservice.update('crafts', "67873c05d96e876ec8275c4b", data).toPromise();
     console.log({resps})
   }
   // table 1
