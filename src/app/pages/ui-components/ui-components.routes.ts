@@ -10,6 +10,9 @@ import { AppFormsComponent } from './forms/forms.component';
 import { AppTablesComponent } from './tables/tables.component';
 import { CraftsComponent } from './crafts/crafts.component';
 
+//Prueba
+import { PruebaDTModalesComponent } from './prueba-dtmodales/prueba-dtmodales.component';
+
 export const UiComponentsRoutes: Routes = [
   {
     path: '',
@@ -45,6 +48,10 @@ export const UiComponentsRoutes: Routes = [
       {
         path: 'crafts',
         component: CraftsComponent,
+      },
+      {
+        path: 'prueba-dtmodales',
+        component: PruebaDTModalesComponent,
       },
     ],
   },

@@ -60,6 +60,12 @@ export const navItems: NavItem[] = [
     route: '/ui-components/crafts',
   },
   {
+    displayName: 'Prueba Datatable Modales',
+    iconName: 'solar:tablet-line-duotone',
+    //crear componente - catalogo
+    route: '/ui-components/prueba-dtmodales',
+  },
+  {
     navCap: 'Auth',
     divider: true
   },
