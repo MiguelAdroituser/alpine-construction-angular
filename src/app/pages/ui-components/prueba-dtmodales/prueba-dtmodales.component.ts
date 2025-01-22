@@ -70,14 +70,26 @@ const ELEMENT_DATA: PeriodicElement[] = [
   templateUrl: './prueba-dtmodales.component.html',
   styleUrl: './prueba-dtmodales.component.scss'
 })
-
-
 export class PruebaDTModalesComponent implements OnInit, AfterViewInit {
   displayedColumns: string[] = ['position', 'name', 'weight', 'symbol'];
   dataSource = new MatTableDataSource(ELEMENT_DATA);
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
+
+  form: FormGroup;
+
+  constructor(
+    private fb: FormBuilder,
+    private dialog: MatDialog
+  ) {
+    this.form = this.fb.group({
+      no: ['', Validators.required],
+      name: ['', Validators.required],
+      weight: ['', [Validators.required, Validators.min(0)]],
+      symbol: ['', Validators.required],
+    });
+  }
 
   ngOnInit() {
     // Configura la fuente de datos
@@ -100,20 +112,6 @@ export class PruebaDTModalesComponent implements OnInit, AfterViewInit {
 
 
   /*Logica del form y modal*/
-
-  form: FormGroup;
-
-  constructor(
-    private fb: FormBuilder,
-    private dialog: MatDialog
-  ) {
-    this.form = this.fb.group({
-      no: ['', Validators.required],
-      name: ['', Validators.required],
-      weight: ['', [Validators.required, Validators.min(0)]],
-      symbol: ['', Validators.required],
-    });
-  }
 
   openModal() {
     const dialogRef = this.dialog.open(ModalFormComponent, {
