@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
-import { MatTableModule } from '@angular/material/table';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MaterialModule } from 'src/app/material.module';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -15,44 +15,18 @@ import { MatInputModule } from '@angular/material/input';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 
-export interface productsData {
-  id: number;
-  imagePath: string;
-  uname: string;
-  budget: number;
-  priority: string;
-}
+/* export interface productsData {
+  name: string;
+  area: string;
+  price: number;
+  Dimensions: string; //tamano de instalacion
+  materialUsed: string;//materiales que se utilizaran
+  leadTime: string; //duración del proyecto
+  description: string;
+} */
 
-const PRODUCT_DATA: productsData[] = [
-  {
-    id: 1,
-    imagePath: 'assets/images/products/dash-prd-1.jpg',
-    uname: 'iPhone 13 pro max-Pacific Blue-128GB storage',
-    budget: 180,
-    priority: 'confirmed',
-  },
-  {
-    id: 2,
-    imagePath: 'assets/images/products/dash-prd-2.jpg',
-    uname: 'Apple MacBook Pro 13 inch-M1-8/256GB-space',
-    budget: 90,
-    priority: 'cancelled',
-  },
-  {
-    id: 3,
-    imagePath: 'assets/images/products/dash-prd-3.jpg',
-    uname: 'PlayStation 5 DualSense Wireless Controller',
-    budget: 120,
-    priority: 'rejected',
-  },
-  {
-    id: 4,
-    imagePath: 'assets/images/products/dash-prd-4.jpg',
-    uname: 'Amazon Basics Mesh, Mid-Back, Swivel Office',
-    budget: 160,
-    priority: 'confirmed',
-  },
-];
+
+const PRODUCT_DATA: Craft[] = [];
 
 
 @Component({
@@ -75,6 +49,10 @@ export class CraftsComponent implements OnInit{
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
+   // table 1
+   displayedColumns1: string[] = ['test', 'test', 'test', 'test'];
+   // dataSource1 = PRODUCT_DATA;
+   dataSource1 = new MatTableDataSource( PRODUCT_DATA );
 
   form: FormGroup;
 
@@ -84,17 +62,20 @@ export class CraftsComponent implements OnInit{
     private fb: FormBuilder
    ) {
     this.form = this.fb.group({
-      no: ['', Validators.required],
       name: ['', Validators.required],
-      weight: ['', [Validators.required, Validators.min(0)]],
-      symbol: ['', Validators.required],
+      area: ['', Validators.required],
+      price: ['', Validators.required],
+      Dimensions: ['', Validators.required], //tamano de instalacion
+      materialUsed: ['', Validators.required],//materiales que se utilizaran
+      leadTime: ['', Validators.required], //duración del proyecto
+      description: ['', Validators.required],
     });
   }
 
   ngOnInit(): void {
-    this.tst();
+    // this.tst();
     // this.tst2();
-    this.updatetst2();
+    // this.updatetst2();
   }
   
   async tst(){
@@ -131,9 +112,7 @@ export class CraftsComponent implements OnInit{
     const resps = await this.apiservice.update('crafts', "67873c05d96e876ec8275c4b", data).toPromise();
     console.log({resps})
   }
-  // table 1
-  displayedColumns1: string[] = ['assigned', 'name', 'priority', 'budget'];
-  dataSource1 = PRODUCT_DATA;
+ 
 
 
   applyFilter(event: Event) {
@@ -215,7 +194,7 @@ export class CraftsComponent implements OnInit{
       </button>
     </mat-dialog-actions>
   `,
-  styleUrls: ['./prueba-dtmodales.component.scss']
+  styleUrls: ['./crafts.component.scss']
 })
 export class ModalFormComponent {
   form: FormGroup;
@@ -225,10 +204,13 @@ export class ModalFormComponent {
     private dialogRef: MatDialogRef<ModalFormComponent>
   ) {
     this.form = this.fb.group({
-      no: ['', Validators.required],
       name: ['', Validators.required],
-      weight: ['', [Validators.required, Validators.min(0)]],
-      symbol: ['', Validators.required],
+      area: ['', Validators.required],
+      price: ['', Validators.required],
+      Dimensions: ['', Validators.required], //tamano de instalacion
+      materialUsed: ['', Validators.required],//materiales que se utilizaran
+      leadTime: ['', Validators.required], //duración del proyecto
+      description: ['', Validators.required],
     });
   }
 
