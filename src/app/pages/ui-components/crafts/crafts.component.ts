@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
@@ -45,14 +45,24 @@ const PRODUCT_DATA: Craft[] = [];
   templateUrl: './crafts.component.html',
   styleUrl: './crafts.component.scss'
 })
-export class CraftsComponent implements OnInit{
+export class CraftsComponent implements OnInit, AfterViewInit {
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
+  PRODUCT_DATA: Craft[] = [];
    // table 1
-   displayedColumns1: string[] = ['test', 'test', 'test', 'test'];
+   displayedColumns: string[] = [
+    'name', 
+    'area', 
+    'price', 
+    'Dimensions', 
+    'materialUsed', 
+    'leadTime',
+    'description'
+  ];
    // dataSource1 = PRODUCT_DATA;
-   dataSource1 = new MatTableDataSource( PRODUCT_DATA );
+   dataSource = new MatTableDataSource<Craft>( this.PRODUCT_DATA );
+  //  dataSource: MatTableDataSource<Craft, MatPaginator> = [];
 
   form: FormGroup;
 
@@ -61,6 +71,7 @@ export class CraftsComponent implements OnInit{
     private dialog: MatDialog,
     private fb: FormBuilder
    ) {
+
     this.form = this.fb.group({
       name: ['', Validators.required],
       area: ['', Validators.required],
@@ -70,18 +81,35 @@ export class CraftsComponent implements OnInit{
       leadTime: ['', Validators.required], //duración del proyecto
       description: ['', Validators.required],
     });
-  }
 
-  ngOnInit(): void {
-    // this.tst();
-    // this.tst2();
-    // this.updatetst2();
+    this.getCrafts();
+
   }
   
-  async tst(){
+  ngOnInit(): void {
+    // this.getCrafts();
+    // this.tst2();
+    // this.updatetst2();
+    // Configura la fuente de datos
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+  }
+  
+  ngAfterViewInit(): void {
+    this.dataSource.paginator = this.paginator; // Vincula el paginador al DataSource
+  }
+  
+  async getCrafts(){
     //const response = await this.apiService.callPostApi(url, undefined,{"postedDate": postDateToUTC}).toPromise();
     const resps = await this.apiservice.findAll('crafts').toPromise();
     console.log({resps})
+    // this.dataSource = new MatTableDataSource( resps );
+    this.PRODUCT_DATA = [...resps]; // Ensure immutability
+    this.dataSource.data = this.PRODUCT_DATA;
+
+    // Reassign paginator and sort to reflect updates correctly
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
 
   }
 
@@ -117,10 +145,10 @@ export class CraftsComponent implements OnInit{
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource1.filter = filterValue.trim().toLowerCase();
+    this.dataSource.filter = filterValue.trim().toLowerCase();
 
-    if (this.dataSource1.paginator) {
-      this.dataSource1.paginator.firstPage(); // Reinicia el paginador si se aplica un filtro
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage(); // Reinicia el paginador si se aplica un filtro
     }
   }
 
