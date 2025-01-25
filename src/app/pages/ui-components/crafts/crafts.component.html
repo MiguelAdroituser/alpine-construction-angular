@@ -9,7 +9,7 @@
 
   <!-- Botón -->
   <mat-card-content class="button-container">
-    <button mat-flat-button color="primary" matTooltip="Add a new item" (click)="openModal()">
+    <button mat-flat-button color="primary" matTooltip="Add a new item" (click)="openModal({})">
       Add
     </button>
   </mat-card-content>
@@ -63,6 +63,14 @@
       <ng-container matColumnDef="description">
         <th mat-header-cell *matHeaderCellDef> description </th>
         <td mat-cell *matCellDef="let element"> {{ element.description }} </td>
+      </ng-container>
+
+      <!-- Columna: Actions -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef> Actions </th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-button color="primary" (click)="openModal(element)">Edit</button>
+        </td>
       </ng-container>
 
       <!-- Fila de encabezados -->

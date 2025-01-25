@@ -6,4 +6,5 @@ export interface Craft {
     materialUsed?: string; // Optional: materiales que se utilizaran
     leadTime?: string; // Optional: duración del proyecto
     description: string; // Required
+    _id?:string;
   }

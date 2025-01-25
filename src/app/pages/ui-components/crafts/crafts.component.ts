@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
@@ -8,27 +8,13 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { ApiService } from 'src/app/services/api.service';
 import { Craft } from 'src/app/interfaces/crafts.interface';
-import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatGridListModule } from '@angular/material/grid-list';
-
-
-/* export interface productsData {
-  name: string;
-  area: string;
-  price: number;
-  Dimensions: string; //tamano de instalacion
-  materialUsed: string;//materiales que se utilizaran
-  leadTime: string; //duración del proyecto
-  description: string;
-} */
-
-
-const PRODUCT_DATA: Craft[] = [];
 
 
 @Component({
@@ -60,7 +46,8 @@ export class CraftsComponent implements OnInit, AfterViewInit {
     'Dimensions', 
     'materialUsed', 
     'leadTime',
-    'description'
+    'description',
+    'actions'
   ];
    // dataSource1 = PRODUCT_DATA;
    dataSource = new MatTableDataSource<Craft>( this.PRODUCT_DATA );
@@ -89,9 +76,6 @@ export class CraftsComponent implements OnInit, AfterViewInit {
   }
   
   ngOnInit(): void {
-    // this.getCrafts();
-    // this.createCraft();
-    // this.updatetst2();
     // Configura la fuente de datos
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
@@ -116,39 +100,26 @@ export class CraftsComponent implements OnInit, AfterViewInit {
   }
 
   async createCraft( craft: Craft ) {
-    /* const data = {
-      "name": "Wooden Sculpture",
-      "area": "Interior Design",
-      "price": 1200,
-      "Dimensions": "2m x 1.5m x 0.5m",
-      "materialUsed": "Oak Wood, Resin",
-      "leadTime": "3 weeks",
-      "description": "A handcrafted wooden sculpture perfect for modern interior decoration."
-    }
+    /* 
     const resps = await this.apiservice.create('crafts/create', data).toPromise();
-    console.log({resps}) */
+     */
     const result = await this.apiservice.create('crafts/create', craft).toPromise();
     console.log('create function', result)
 
     this.getCrafts();
-    
+
   }
   
-  async updatetst2() {
-    const data = {
-      "name": "Wooden 3 Sculpture",
-      "area": "Interior Design 2",
-      "price": 1200,
-      "Dimensions": "2m x 1.5m x 0.5m",
-      "materialUsed": "Oak Wood, Resin",
-      "leadTime": "6 weeks",
-      "description": "A handcrafted wooden sculpture perfect for modern interior decoration."
-    }
-    const resps = await this.apiservice.update('crafts', "67873c05d96e876ec8275c4b", data).toPromise();
-    console.log({resps})
+  async updateCraft( craft: Craft ) {
+
+    const { _id } = craft;
+    
+    // const resps = await this.apiservice.update('crafts', "67873c05d96e876ec8275c4b", data).toPromise();
+    const resps = await this.apiservice.update('crafts', _id!, craft).toPromise();
+    
+    this.getCrafts();
   }
  
-
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
@@ -161,17 +132,24 @@ export class CraftsComponent implements OnInit, AfterViewInit {
 
     /*Logica del form y modal*/
   
-  openModal() {
+  openModal( element:any ) {
     const dialogRef = this.dialog.open(ModalFormComponent, {
       width: '400px',
-      data: { form: this.form },
+      data: { form: element },
+      // data: { form: this.form },
     });
 
-    dialogRef.afterClosed().subscribe((result: Craft) => {
+    dialogRef.afterClosed().subscribe((result: any) => {
       if (result) {
         console.log('Form Data:', result); // Aquí manejas los datos enviados desde el formulario
-        this.createCraft( result );
-        //this.getCrafts();
+        
+        if ( result._id === '' ) {
+          this.createCraft( result );
+          return;
+        }
+
+        this.updateCraft( result );
+        
       } else {
         console.log('Modal closed without data');
       }
@@ -203,16 +181,19 @@ export class ModalFormComponent {
 
   constructor(
     private fb: FormBuilder,
-    private dialogRef: MatDialogRef<ModalFormComponent>
+    private dialogRef: MatDialogRef<ModalFormComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any // Inject the data passed to the modal
   ) {
+    // Initialize the form with the passed data (element)
     this.form = this.fb.group({
-      name: ['', Validators.required],
-      area: ['', Validators.required],
-      price: ['', Validators.required],
-      Dimensions: ['', Validators.required], //tamano de instalacion
-      materialUsed: ['', Validators.required],//materiales que se utilizaran
-      leadTime: ['', Validators.required], //duración del proyecto
-      description: ['', Validators.required],
+      _id: [this.data.form._id || ''],
+      name: [this.data.form.name || '', Validators.required],
+      area: [this.data.form.area || '', Validators.required],
+      price: [this.data.form.price || '', Validators.required],
+      Dimensions: [this.data.form.Dimensions || '', Validators.required],
+      materialUsed: [this.data.form.materialUsed || '', Validators.required],
+      leadTime: [this.data.form.leadTime || '', Validators.required],
+      description: [this.data.form.description || '', Validators.required],
     });
   }
 
