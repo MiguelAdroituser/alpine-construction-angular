@@ -8,7 +8,7 @@
   </mat-form-field>
 
   <!-- Botón -->
-  <mat-card-content class="b-t-1 button-container">
+  <mat-card-content class="button-container">
     <button mat-flat-button color="primary" matTooltip="Add a new item" (click)="openModal()">
       Add
     </button>
@@ -20,6 +20,7 @@
   <mat-card-content>
     <mat-card-title>Crafts - Alpine Construction</mat-card-title>
 
+    <div class="table-responsive">
     <!-- Tabla -->
     <table mat-table [dataSource]="dataSource" class="">
       <!-- Columna: name -->
@@ -69,7 +70,7 @@
       <!-- Fila de datos -->
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
-
+    </div>
     <!-- Paginador -->
     <mat-paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 20]"></mat-paginator>
 

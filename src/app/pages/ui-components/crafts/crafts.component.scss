@@ -29,5 +29,16 @@
       grid-column: span 2;  // Make description field span both columns
     }
   }
+
+  .table-responsive {
+    overflow-x: auto;
+    max-width: 100%;
+    white-space: nowrap;
+  
+    table {
+      width: 100%;
+      min-width: 800px; /* Adjust based on your content */
+    }
+  }
   
   
