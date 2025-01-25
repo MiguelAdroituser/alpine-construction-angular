@@ -14,6 +14,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
+import { MatGridListModule } from '@angular/material/grid-list';
+
 
 /* export interface productsData {
   name: string;
@@ -40,7 +42,7 @@ const PRODUCT_DATA: Craft[] = [];
         MatIconModule,
         MatMenuModule,
         MatButtonModule,
-        MatDialogModule
+        MatDialogModule,
   ],
   templateUrl: './crafts.component.html',
   styleUrl: './crafts.component.scss'
@@ -88,7 +90,7 @@ export class CraftsComponent implements OnInit, AfterViewInit {
   
   ngOnInit(): void {
     // this.getCrafts();
-    // this.tst2();
+    // this.createCraft();
     // this.updatetst2();
     // Configura la fuente de datos
     this.dataSource.paginator = this.paginator;
@@ -113,8 +115,8 @@ export class CraftsComponent implements OnInit, AfterViewInit {
 
   }
 
-  async tst2() {
-    const data = {
+  async createCraft( craft: Craft ) {
+    /* const data = {
       "name": "Wooden Sculpture",
       "area": "Interior Design",
       "price": 1200,
@@ -124,7 +126,12 @@ export class CraftsComponent implements OnInit, AfterViewInit {
       "description": "A handcrafted wooden sculpture perfect for modern interior decoration."
     }
     const resps = await this.apiservice.create('crafts/create', data).toPromise();
-    console.log({resps})
+    console.log({resps}) */
+    const result = await this.apiservice.create('crafts/create', craft).toPromise();
+    console.log('create function', result)
+
+    this.getCrafts();
+    
   }
   
   async updatetst2() {
@@ -160,9 +167,11 @@ export class CraftsComponent implements OnInit, AfterViewInit {
       data: { form: this.form },
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result: Craft) => {
       if (result) {
         console.log('Form Data:', result); // Aquí manejas los datos enviados desde el formulario
+        this.createCraft( result );
+        //this.getCrafts();
       } else {
         console.log('Modal closed without data');
       }
@@ -175,7 +184,7 @@ export class CraftsComponent implements OnInit, AfterViewInit {
 
 
 @Component({
-  selector: 'app-modal-form',
+  selector: 'app-crafts-modal',
   standalone: true,
   imports: [
     CommonModule,
@@ -184,44 +193,9 @@ export class CraftsComponent implements OnInit, AfterViewInit {
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
+    MatGridListModule
   ],
-  template: `
-    <h2 mat-dialog-title>Add New Item</h2>
-    <mat-dialog-content>
-      <form [formGroup]="form">
-        <mat-form-field appearance="fill" class="full-width">
-          <mat-label>No</mat-label>
-          <input matInput formControlName="no" />
-          <mat-error *ngIf="form.get('no')?.hasError('required')">No is required</mat-error>
-        </mat-form-field>
-
-        <mat-form-field appearance="fill" class="full-width">
-          <mat-label>Name</mat-label>
-          <input matInput formControlName="name" />
-          <mat-error *ngIf="form.get('name')?.hasError('required')">Name is required</mat-error>
-        </mat-form-field>
-
-        <mat-form-field appearance="fill" class="full-width">
-          <mat-label>Weight</mat-label>
-          <input matInput type="number" formControlName="weight" />
-          <mat-error *ngIf="form.get('weight')?.hasError('required')">Weight is required</mat-error>
-        </mat-form-field>
-
-        <mat-form-field appearance="fill" class="full-width">
-          <mat-label>Symbol</mat-label>
-          <input matInput formControlName="symbol" />
-          <mat-error *ngIf="form.get('symbol')?.hasError('required')">Symbol is required</mat-error>
-        </mat-form-field>
-      </form>
-    </mat-dialog-content>
-
-    <mat-dialog-actions align="end">
-      <button mat-button (click)="onClose()">Cancel</button>
-      <button mat-flat-button color="primary" (click)="onSubmit()" [disabled]="form.invalid">
-        Submit
-      </button>
-    </mat-dialog-actions>
-  `,
+  templateUrl: './crafts-modal.component.html',
   styleUrls: ['./crafts.component.scss']
 })
 export class ModalFormComponent {
