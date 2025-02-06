@@ -12,6 +12,9 @@ import { CraftsComponent } from './crafts/crafts.component';
 
 //Prueba
 import { PruebaDTModalesComponent } from './prueba-dtmodales/prueba-dtmodales.component';
+import { AreasComponent } from './areas/areas.component';
+import { CustomersComponent } from './customers/customers.component';
+
 
 export const UiComponentsRoutes: Routes = [
   {
@@ -52,6 +55,14 @@ export const UiComponentsRoutes: Routes = [
       {
         path: 'prueba-dtmodales',
         component: PruebaDTModalesComponent,
+      },
+      {
+        path: 'areas',
+        component: AreasComponent,
+      },
+      {
+        path: 'customers',
+        component: CustomersComponent,
       },
     ],
   },

@@ -66,6 +66,18 @@ export const navItems: NavItem[] = [
     route: '/ui-components/prueba-dtmodales',
   },
   {
+    displayName: 'Areas',
+    iconName: 'solar:tablet-line-duotone',
+    //New Catalog
+    route: '/ui-components/areas',
+  },
+  {
+    displayName: 'Customers',
+    iconName: 'solar:tablet-line-duotone',
+    //New Catalog
+    route: '/ui-components/customers',
+  },
+  {
     navCap: 'Auth',
     divider: true
   },
