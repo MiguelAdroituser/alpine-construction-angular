@@ -1,0 +1,42 @@
+.table-container {
+    margin: 16px;
+    overflow: auto; /* Asegura que la tabla sea responsiva */
+}
+    
+table {
+    width: 100%;
+}
+  
+  
+.filter-container {
+    display: flex; /* Establece un layout en línea para los elementos hijos */
+    align-items: center; /* Alinea verticalmente el botón y el campo */
+    gap: 8px; /* Espacio entre el filtro y el botón */
+}
+  
+  
+.button-container {
+    display: flex;
+    margin-left: auto; /* Empuja el botón hacia la derecha */
+}
+  
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  
+    .full-width {
+      grid-column: span 2;  // Make description field span both columns
+    }
+}
+
+.table-responsive {
+    overflow-x: auto;
+    max-width: 100%;
+    white-space: nowrap;
+  
+    table {
+      width: 100%;
+      min-width: 800px; /* Adjust based on your content */
+    }
+}

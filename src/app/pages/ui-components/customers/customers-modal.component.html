@@ -1,0 +1,35 @@
+<h2 mat-dialog-title>Customer</h2>
+<mat-dialog-content>
+  <form [formGroup]="form">
+
+    <div class="form-grid">
+      <mat-form-field appearance="fill">
+        <mat-label>Customer Name</mat-label>
+        <input matInput formControlName="customerName" />
+        <mat-error *ngIf="form.get('customerName')?.hasError('required')">Customer Name is required</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Project Name</mat-label>
+        <input matInput formControlName="projectName" />
+        <mat-error *ngIf="form.get('projectName')?.hasError('required')">Project Name is required</mat-error>
+      </mat-form-field>
+
+      <!--
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>User ID</mat-label>
+        <input matInput formControlName="userId" />
+        <mat-error *ngIf="form.get('userId')?.hasError('required')">User ID is required</mat-error>
+      </mat-form-field>
+      -->
+
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onClose()">Cancel</button>
+  <button mat-flat-button color="primary" (click)="onSubmit()" [disabled]="form.invalid">
+    Submit
+  </button>
+</mat-dialog-actions>
