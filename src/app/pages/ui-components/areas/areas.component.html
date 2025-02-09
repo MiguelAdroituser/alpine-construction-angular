@@ -1,5 +1,21 @@
+<!-- Customer and projects select -->
+<div class="row">
+  <div class="col-lg-4">
+    <mat-label class="f-w-600 m-b-8 d-block">Customer - Project</mat-label>
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-select [(value)]="selectedCustomer" (selectionChange)="onCustomerChange($event.value)">
+        @for(option of customers; track option._id) {
+        <mat-option [value]="option._id">
+          {{ option.customerName }} - {{ option.projectName }}
+        </mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  </div>
+</div>
+
 <!-- Contenedor para el filtro y el botón -->
-<div class="filter-container">
+<div class="filter-container m-t-24">
 
     <!-- Campo de búsqueda -->
     <mat-form-field appearance="outline" class="filter-field">
@@ -18,7 +34,7 @@
   
 <mat-card class="cardWithShadow">
   <mat-card-content>
-    <mat-card-title>Areas - Alpine Construction</mat-card-title>
+    <mat-card-title>Areas - Per Work/Task</mat-card-title>
 
     <div class="table-responsive">
       <!-- Tabla -->

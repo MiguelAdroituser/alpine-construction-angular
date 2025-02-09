@@ -1,0 +1,7 @@
+se intenta crear un area donde ya se toma 
+el customer Id (que hace referencia al cliente y al proyecto)
+
+en el backend arroja error porque faltan algunas
+propiedades, y otras que si se envian,
+probablemente esten escritas diferentes.
+

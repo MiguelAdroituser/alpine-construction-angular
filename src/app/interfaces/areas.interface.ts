@@ -1,4 +1,5 @@
 export interface AreaInterface {
+    customerId: string; //Required
     Room: number; // Required
     RoomName: string; // Required
     Craft: string; // Required

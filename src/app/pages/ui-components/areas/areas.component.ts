@@ -1,16 +1,4 @@
-/*import { Component } from '@angular/core';
 
-@Component({
-  selector: 'app-areas',
-  standalone: true,
-  imports: [],
-  templateUrl: './areas.component.html',
-  styleUrl: './areas.component.scss'
-})
-export class AreasComponent {
-
-}
-*/
 
 import { AfterViewInit, Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -29,8 +17,57 @@ import { MatInputModule } from '@angular/material/input';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatGridListModule } from '@angular/material/grid-list';
+import { Customer } from 'src/app/interfaces/customers.interface';
 
+/* 
+@Prop({ type: mongoose.Schema.Types.ObjectId, ref: Customer.name, required: true })
+    customerId: mongoose.Types.ObjectId; //It contains the customer Id and project Id.
 
+    @Prop({ required: true })
+    room: number;
+
+    @Prop({ required: true })
+    roomName: string;
+
+    @Prop({ required: true })
+    craft: string;
+
+    @Prop({ required: true })
+    area: string;
+
+    @Prop({ required: true })
+    price: number;
+
+    @Prop({ required: true })
+    direction: string;
+
+    @Prop({ required: true })
+    cantidad: number;
+
+    @Prop({ required: true })
+    disposal: number;
+
+    @Prop({ required: true })
+    totalCantidad: number;
+
+    @Prop({ required: true })
+    bidden: number;
+
+    @Prop({ required: true })
+    total: number;
+
+    @Prop({ required: true })
+    unidadUsa: string;
+
+    @Prop({ required: true })
+    unidadMx: string;
+
+    @Prop({ required: true })
+    cantidadUsa: number;
+
+    @Prop({ required: true })
+    cantidadMx: number;
+*/
 @Component({
   selector: 'app-areas',
   standalone: true,
@@ -51,6 +88,7 @@ export class AreasComponent implements OnInit, AfterViewInit {
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
+
   PRODUCT_DATA: AreaInterface[] = [];
    // table 1
    displayedColumns: string[] = [
@@ -68,11 +106,15 @@ export class AreasComponent implements OnInit, AfterViewInit {
     'Total',
     'actions'
   ];
-   // dataSource1 = PRODUCT_DATA;
+ 
   dataSource = new MatTableDataSource<AreaInterface>( this.PRODUCT_DATA );
-  //  dataSource: MatTableDataSource<Craft, MatPaginator> = [];
 
   form: FormGroup;
+
+  /* Customers config selector */
+  customers: Customer[] = [];
+
+  selectedCustomer: string | null = null;
 
   constructor( 
     private apiservice: ApiService<AreaInterface>, 
@@ -96,6 +138,7 @@ export class AreasComponent implements OnInit, AfterViewInit {
     });
 
     this.getAreas();
+    this.getCustomers();
 
   }
   
@@ -110,10 +153,10 @@ export class AreasComponent implements OnInit, AfterViewInit {
   }
   
   async getAreas(){
-    //const response = await this.apiService.callPostApi(url, undefined,{"postedDate": postDateToUTC}).toPromise();
+    
     const resps = await this.apiservice.findAll('areas').toPromise();
     console.log({resps})
-    // this.dataSource = new MatTableDataSource( resps );
+    
     this.PRODUCT_DATA = [...resps]; // Ensure immutability
     this.dataSource.data = this.PRODUCT_DATA;
 
@@ -123,11 +166,28 @@ export class AreasComponent implements OnInit, AfterViewInit {
 
   }
 
+  async getCustomers(){
+    
+    try {
+      const customers = await this.apiservice.findAll('customers').toPromise();
+      console.log({ customers });
+      this.customers = customers;
+  
+      if (customers.length > 0) {
+        this.selectedCustomer = customers[1]._id; // Default selection
+        this.onCustomerChange(this.selectedCustomer); // Trigger additional logic
+      }
+    } catch (error) {
+      console.error('Error fetching customers:', error);
+    }
+
+  }
+
   async createAreas( area: AreaInterface ) {
     /* 
     const resps = await this.apiservice.create('crafts/create', data).toPromise();
      */
-    const result = await this.apiservice.create('areas/create', area).toPromise();
+    const result = await this.apiservice.create('areas/create', {...area, customerId: this.selectedCustomer! }).toPromise();
     console.log('create function', result)
 
     this.getAreas();
@@ -144,6 +204,17 @@ export class AreasComponent implements OnInit, AfterViewInit {
     this.getAreas();
   }
  
+  onCustomerChange(customerId: string | null) {
+    console.log('Selected Customer ID:', customerId);
+  
+    // Find the selected customer object
+    const selected = this.customers.find(c => c._id === customerId);
+    if (selected) {
+      console.log('Selected Customer:', selected);
+  
+      // Perform additional logic here (e.g., update another field)
+    }
+  }
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
