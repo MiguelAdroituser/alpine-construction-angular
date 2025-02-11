@@ -92,18 +92,18 @@ export class AreasComponent implements OnInit, AfterViewInit {
   PRODUCT_DATA: AreaInterface[] = [];
    // table 1
    displayedColumns: string[] = [
-    'Room', 
-    'RoomName', 
-    'Craft', 
-    'Area', 
-    'Price', 
-    'Direction',
-    'Type',
-    'SF',
-    'Disposal20',
-    'TotalSqFt',
-    'Bidder',
-    'Total',
+    'room', 
+    'roomName', 
+    'craft', 
+    'area', 
+    'price', 
+    'direction',
+    'type',
+    'cantidad',
+    'disposal',
+    'totalCantidad',
+    'bidden',
+    'total',
     'actions'
   ];
  
@@ -123,18 +123,23 @@ export class AreasComponent implements OnInit, AfterViewInit {
    ) {
 
     this.form = this.fb.group({
-      Room: ['', Validators.required],
-      RoomName: ['', Validators.required],
-      Craft: ['', Validators.required],
-      Area: ['', Validators.required], 
-      Price: ['', Validators.required],
-      Direction: ['', Validators.required], 
-      Type: ['', Validators.required],
-      SF: ['', Validators.required],
-      Disposal20: ['', Validators.required],
-      TotalSqFt: ['', Validators.required],
-      Bidder: ['', Validators.required],
-      Total: ['', Validators.required],
+      room: ['', Validators.required],
+      roomName: ['', Validators.required],
+      craft: ['', Validators.required],
+      area: ['', Validators.required], 
+      price: ['', Validators.required],
+      direction: ['', Validators.required], 
+      type: ['', Validators.required],
+      cantidad: ['', Validators.required],
+      disposal: ['', Validators.required],
+      totalCantidad: ['', Validators.required],
+      bidden: ['', Validators.required],
+      total: ['', Validators.required],
+
+      unidadUsa: ['sqft', Validators.required],
+      unidadMx: ['m3', Validators.required],
+      cantidadUsa: ['2345', Validators.required],
+      cantidadMx: ['2345', Validators.required],
     });
 
     this.getAreas();
@@ -282,18 +287,23 @@ export class ModalFormComponent {
     // Initialize the form with the passed data (element)
     this.form = this.fb.group({
       _id: [this.data.form._id || ''],
-      Room: [this.data.form.Room || '', Validators.required],
-      RoomName: [this.data.form.RoomName || '', Validators.required],
-      Craft: [this.data.form.Craft || '', Validators.required],
-      Area: [this.data.form.Area || '', Validators.required],
-      Price: [this.data.form.Price || '', Validators.required],
-      Direction: [this.data.form.Direction || '', Validators.required],
-      Type: [this.data.form.Type || '', Validators.required],
-      SF: [this.data.form.SF || '', Validators.required],
-      Disposal20: [this.data.form.Disposal20 || '', Validators.required],
-      TotalSqFt: [this.data.form.TotalSqFt || '', Validators.required],
-      Bidder: [this.data.form.Bidder || '', Validators.required],
-      Total: [this.data.form.Total || '', Validators.required],
+      room: [this.data.form.room || '', Validators.required],
+      roomName: [this.data.form.roomName || '', Validators.required],
+      craft: [this.data.form.craft || '', Validators.required],
+      area: [this.data.form.area || '', Validators.required],
+      price: [this.data.form.price || '', Validators.required],
+      direction: [this.data.form.direction || '', Validators.required],
+      type: [this.data.form.type || '', Validators.required],
+      cantidad: [this.data.form.cantidad || '', Validators.required],
+      disposal: [this.data.form.disposal || '', Validators.required],
+      totalCantidad: [this.data.form.totalCantidad || '', Validators.required],
+      bidden: [this.data.form.bidden || '', Validators.required],
+      total: [this.data.form.total || '', Validators.required],
+
+      unidadUsa: [this.data.form.unidadUsa || '', Validators.required],
+      unidadMx: [this.data.form.unidadMx || '', Validators.required],
+      cantidadUsa: [this.data.form.cantidadUsa || '', Validators.required],
+      cantidadMx: [this.data.form.cantidadMx || '', Validators.required],
     });
   }
 
