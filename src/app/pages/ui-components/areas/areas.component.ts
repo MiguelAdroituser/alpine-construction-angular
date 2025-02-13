@@ -136,10 +136,10 @@ export class AreasComponent implements OnInit, AfterViewInit {
       bidden: ['', Validators.required],
       total: ['', Validators.required],
 
-      unidadUsa: ['sqft', Validators.required],
-      unidadMx: ['m3', Validators.required],
-      cantidadUsa: ['2345', Validators.required],
-      cantidadMx: ['2345', Validators.required],
+      unidadUsa: ['sqft'],
+      unidadMx: ['m3'],
+      cantidadUsa: ['2345'],
+      cantidadMx: ['2345'],
     });
 
     this.getAreas();
@@ -300,10 +300,10 @@ export class ModalFormComponent {
       bidden: [this.data.form.bidden || '', Validators.required],
       total: [this.data.form.total || '', Validators.required],
 
-      unidadUsa: [this.data.form.unidadUsa || '', Validators.required],
-      unidadMx: [this.data.form.unidadMx || '', Validators.required],
-      cantidadUsa: [this.data.form.cantidadUsa || '', Validators.required],
-      cantidadMx: [this.data.form.cantidadMx || '', Validators.required],
+      unidadUsa: [this.data.form.unidadUsa || ''],
+      unidadMx: [this.data.form.unidadMx || ''],
+      cantidadUsa: [this.data.form.cantidadUsa || ''],
+      cantidadMx: [this.data.form.cantidadMx || ''],
     });
   }
 
