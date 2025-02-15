@@ -36,7 +36,10 @@ export class ApiService<T>{
     callPostApi(url:string,params?:HttpParams,data?:any):Observable<any>{
         return this.http.post<T[]>(`${this.apiUrl}${url}?${params}`,data);
     }
-    callGetApi(url:string,params?:HttpParams):Observable<any>{
+    /* callGetApi(url:string,params?:HttpParams):Observable<any>{
         return this.http.get<T[]>(`${this.apiUrl}${url}?${params}`);
+    } */
+    callGetApi<T>(url: string, params?: HttpParams): Observable<T> {
+        return this.http.get<T>(`${this.apiUrl}${url}`, { params });
     }
 }

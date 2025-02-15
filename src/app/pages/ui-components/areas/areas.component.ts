@@ -18,6 +18,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { Customer } from 'src/app/interfaces/customers.interface';
+import { HttpParams } from '@angular/common/http';
 
 /* 
 @Prop({ type: mongoose.Schema.Types.ObjectId, ref: Customer.name, required: true })
@@ -158,16 +159,26 @@ export class AreasComponent implements OnInit, AfterViewInit {
   }
   
   async getAreas(){
+    const params = new HttpParams().set('customerId', this.selectedCustomer || '');
     
-    const resps = await this.apiservice.findAll('areas').toPromise();
-    console.log({resps})
-    
-    this.PRODUCT_DATA = [...resps]; // Ensure immutability
-    this.dataSource.data = this.PRODUCT_DATA;
+    try {
 
-    // Reassign paginator and sort to reflect updates correctly
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
+      const resps = await this.apiservice.callGetApi<any>('areas', params).toPromise();
+      console.log({ resps });
+      this.PRODUCT_DATA = [...resps]; // Ensure immutability
+      this.dataSource.data = this.PRODUCT_DATA;
+   
+      // Reassign paginator and sort to reflect updates correctly
+      this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.sort;
+
+    } catch (error) {
+      console.error('Error fetching areas:', error);
+    }
+    
+   /*  const resps = await this.apiservice.findOne('areas', this.selectedCustomer).toPromise();
+    console.log({resps}) */
+
 
   }
 
@@ -216,7 +227,7 @@ export class AreasComponent implements OnInit, AfterViewInit {
     const selected = this.customers.find(c => c._id === customerId);
     if (selected) {
       console.log('Selected Customer:', selected);
-  
+      this.getAreas();
       // Perform additional logic here (e.g., update another field)
     }
   }

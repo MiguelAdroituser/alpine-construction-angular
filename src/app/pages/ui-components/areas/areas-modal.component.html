@@ -75,6 +75,30 @@
         <mat-error *ngIf="form.get('total')?.hasError('required')">Total is required</mat-error>
       </mat-form-field>
 
+      <mat-form-field appearance="fill">
+        <mat-label>Unidad USA</mat-label>
+        <input matInput formControlName="unidadUsa" />
+        <mat-error *ngIf="form.get('unidadUsa')?.hasError('required')">unidadUsa is required</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Unidad MX</mat-label>
+        <input matInput formControlName="unidadMx" />
+        <mat-error *ngIf="form.get('unidadMx')?.hasError('required')">unidadMx is required</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Cantidad USA</mat-label>
+        <input matInput formControlName="cantidadUsa" />
+        <mat-error *ngIf="form.get('cantidadUsa')?.hasError('required')">cantidadUsa is required</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Cantidad MX</mat-label>
+        <input matInput formControlName="cantidadMx" />
+        <mat-error *ngIf="form.get('cantidadMx')?.hasError('required')">cantidadMx is required</mat-error>
+      </mat-form-field>
+
     </div>
   </form>
 </mat-dialog-content>
@@ -85,3 +109,4 @@
     Submit
   </button>
 </mat-dialog-actions>
+
