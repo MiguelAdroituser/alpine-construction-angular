@@ -19,56 +19,11 @@ import { MatSort } from '@angular/material/sort';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { Customer } from 'src/app/interfaces/customers.interface';
 import { HttpParams } from '@angular/common/http';
+import { Craft } from 'src/app/interfaces/crafts.interface';
+import { MatSelectModule } from '@angular/material/select';
+import { MatOptionModule } from '@angular/material/core';
+import { Subscription } from 'rxjs';
 
-/* 
-@Prop({ type: mongoose.Schema.Types.ObjectId, ref: Customer.name, required: true })
-    customerId: mongoose.Types.ObjectId; //It contains the customer Id and project Id.
-
-    @Prop({ required: true })
-    room: number;
-
-    @Prop({ required: true })
-    roomName: string;
-
-    @Prop({ required: true })
-    craft: string;
-
-    @Prop({ required: true })
-    area: string;
-
-    @Prop({ required: true })
-    price: number;
-
-    @Prop({ required: true })
-    direction: string;
-
-    @Prop({ required: true })
-    cantidad: number;
-
-    @Prop({ required: true })
-    disposal: number;
-
-    @Prop({ required: true })
-    totalCantidad: number;
-
-    @Prop({ required: true })
-    bidden: number;
-
-    @Prop({ required: true })
-    total: number;
-
-    @Prop({ required: true })
-    unidadUsa: string;
-
-    @Prop({ required: true })
-    unidadMx: string;
-
-    @Prop({ required: true })
-    cantidadUsa: number;
-
-    @Prop({ required: true })
-    cantidadMx: number;
-*/
 @Component({
   selector: 'app-areas',
   standalone: true,
@@ -126,6 +81,7 @@ export class AreasComponent implements OnInit, AfterViewInit {
     this.form = this.fb.group({
       room: ['', Validators.required],
       roomName: ['', Validators.required],
+      craftId: ['', Validators.required],
       craft: ['', Validators.required],
       area: ['', Validators.required], 
       price: ['', Validators.required],
@@ -145,6 +101,7 @@ export class AreasComponent implements OnInit, AfterViewInit {
 
     this.getAreas();
     this.getCustomers();
+    // this.getCrafts();
 
   }
   
@@ -181,6 +138,13 @@ export class AreasComponent implements OnInit, AfterViewInit {
 
 
   }
+
+  /* async getCrafts(){
+    
+    const crafts = await this.apiservice.findAll('crafts').toPromise();
+    console.log({crafts})
+
+  } */
 
   async getCustomers(){
     
@@ -282,17 +246,24 @@ export class AreasComponent implements OnInit, AfterViewInit {
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    MatGridListModule
+    MatGridListModule,
+    MatSelectModule,
+    MatOptionModule
   ],
   templateUrl: './areas-modal.component.html',
   styleUrls: ['./areas.component.scss']
 })
-export class ModalFormComponent {
+export class ModalFormComponent implements OnInit{
   form: FormGroup;
+  private bs!: Subscription | undefined;
+  craftOptions: Craft[] = [];
+  directions: string[] = ['North', 'East', 'South', 'West'];
+  
 
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<ModalFormComponent>,
+    private apiservice: ApiService<any>, 
     @Inject(MAT_DIALOG_DATA) public data: any // Inject the data passed to the modal
   ) {
     // Initialize the form with the passed data (element)
@@ -301,9 +272,10 @@ export class ModalFormComponent {
       room: [this.data.form.room || '', Validators.required],
       roomName: [this.data.form.roomName || '', Validators.required],
       craft: [this.data.form.craft || '', Validators.required],
+      craftId: [this.data.form.craftId || '', Validators.required],
       area: [this.data.form.area || '', Validators.required],
       price: [this.data.form.price || '', Validators.required],
-      direction: [this.data.form.direction || '', Validators.required],
+      direction: [this.data.form.direction || 'North', Validators.required],
       type: [this.data.form.type || '', Validators.required],
       cantidad: [this.data.form.cantidad || '', Validators.required],
       disposal: [this.data.form.disposal || '', Validators.required],
@@ -316,6 +288,59 @@ export class ModalFormComponent {
       cantidadUsa: [this.data.form.cantidadUsa || ''],
       cantidadMx: [this.data.form.cantidadMx || ''],
     });
+  }
+  ngOnInit(): void {
+    // throw new Error('Method not implemented.');
+    this.loadCraftOptions();
+    this.craftIdSuscription();
+  }
+
+  craftIdSuscription() {
+    /* this.bs = this.form.get('craftId')?.valueChanges.subscribe(valor => {
+     
+        console.log('craft id changes',  valor)
+
+    }); */
+    // this.bs.add(sub);
+    this.bs = this.form.get('craftId')?.valueChanges.subscribe(craftId => {
+      console.log('craftId changes:', craftId);
+  
+      // Find the selected craft from craftOptions
+      const selectedCraft = this.craftOptions.find(option => option._id === craftId);
+  
+      if (selectedCraft) {
+        this.form.patchValue({
+          craft: selectedCraft.name,
+          area: selectedCraft.area
+        });
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    // Desuscribirse de todas las suscripciones para evitar pérdidas de memoria.
+    this.bs?.unsubscribe();
+  }
+
+  async loadCraftOptions() {
+    /* this.http.get<{ value: string; label: string }[]>('/api/crafts').subscribe(
+      (options) => {
+        this.craftOptions = options;
+
+        // Ensure the selected craft is valid
+        const currentCraft = this.form.get('craft')?.value;
+        if (!options.some((option) => option.value === currentCraft)) {
+          this.form.get('craft')?.setValue('');
+        }
+      },
+      (error) => {
+        console.error('Error fetching craft options', error);
+      }
+    ); */
+
+    const crafts = await this.apiservice.findAll('crafts').toPromise();
+    console.log({crafts})
+    this.craftOptions = crafts;
   }
 
   onSubmit() {

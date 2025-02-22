@@ -15,16 +15,27 @@
         <mat-error *ngIf="form.get('roomName')?.hasError('required')">Room Name is required</mat-error>
       </mat-form-field>
 
+      
+      <mat-form-field appearance="fill">
+        <mat-label>Craft - Area</mat-label>
+        <mat-select formControlName="craftId">
+          <mat-option *ngFor="let option of craftOptions" [value]="option._id">
+            {{ option.name }} - {{ option.area }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="form.get('craft')?.hasError('required')">
+          Craft is required
+        </mat-error>
+      </mat-form-field>
+      
       <mat-form-field appearance="fill">
         <mat-label>Craft</mat-label>
-        <input matInput formControlName="craft" />
-        <mat-error *ngIf="form.get('craft')?.hasError('required')">Craft is required</mat-error>
+        <input matInput formControlName="craft" readonly />
       </mat-form-field>
 
       <mat-form-field appearance="fill">
         <mat-label>Area</mat-label>
-        <input matInput formControlName="area" />
-        <mat-error *ngIf="form.get('area')?.hasError('required')">Area is required</mat-error>
+        <input matInput formControlName="area" readonly />
       </mat-form-field>
 
       <mat-form-field appearance="fill">
@@ -35,7 +46,9 @@
 
       <mat-form-field appearance="fill">
         <mat-label>Direction</mat-label>
-        <input matInput formControlName="direction" />
+        <mat-select formControlName="direction">
+          <mat-option *ngFor="let dir of directions" [value]="dir">{{ dir }}</mat-option>
+        </mat-select>
         <mat-error *ngIf="form.get('direction')?.hasError('required')">Direction is required</mat-error>
       </mat-form-field>
 
