@@ -3,6 +3,38 @@
   <form [formGroup]="form">
     <div class="form-grid">
     
+      <!-- <mat-form-field appearance="fill">
+        <mat-label>Unidad USA</mat-label>
+        <input matInput formControlName="unidadUsa" />
+        <mat-error *ngIf="form.get('unidadUsa')?.hasError('required')">unidadUsa is required</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Unidad MX</mat-label>
+        <input matInput formControlName="unidadMx" />
+        <mat-error *ngIf="form.get('unidadMx')?.hasError('required')">unidadMx is required</mat-error>
+      </mat-form-field> -->
+
+      <!-- USA Unit Selection -->
+      <mat-form-field appearance="fill">
+        <mat-label>USA Unit</mat-label>
+        <mat-select formControlName="unidadUsa">
+          <mat-option *ngFor="let unit of usaUnits" [value]="unit">
+            {{ unit }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- MX Unit Selection (Readonly) -->
+      <mat-form-field appearance="fill">
+        <mat-label>MX Unit</mat-label>
+        <mat-select formControlName="unidadMx" readonly>
+          <mat-option *ngFor="let unit of mxUnits" [value]="unit">
+            {{ unit }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
       <mat-form-field appearance="fill">
         <mat-label>Room</mat-label>
         <input matInput type="number" formControlName="room" />
@@ -86,18 +118,6 @@
         <mat-label>Total</mat-label>
         <input matInput type="number" formControlName="total" />
         <mat-error *ngIf="form.get('total')?.hasError('required')">Total is required</mat-error>
-      </mat-form-field>
-
-      <mat-form-field appearance="fill">
-        <mat-label>Unidad USA</mat-label>
-        <input matInput formControlName="unidadUsa" />
-        <mat-error *ngIf="form.get('unidadUsa')?.hasError('required')">unidadUsa is required</mat-error>
-      </mat-form-field>
-
-      <mat-form-field appearance="fill">
-        <mat-label>Unidad MX</mat-label>
-        <input matInput formControlName="unidadMx" />
-        <mat-error *ngIf="form.get('unidadMx')?.hasError('required')">unidadMx is required</mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="fill">

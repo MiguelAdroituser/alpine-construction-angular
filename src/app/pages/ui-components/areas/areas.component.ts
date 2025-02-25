@@ -258,6 +258,12 @@ export class ModalFormComponent implements OnInit{
   private bs!: Subscription | undefined;
   craftOptions: Craft[] = [];
   directions: string[] = ['North', 'East', 'South', 'West'];
+  unitMappings: { [key: string]: string } = {
+    'LB': 'KG',
+    'FT2': 'M2',
+    'FT3': 'M3',
+    'FT': 'ML'
+  };
   
 
   constructor(
@@ -283,8 +289,10 @@ export class ModalFormComponent implements OnInit{
       bidden: [this.data.form.bidden || '', Validators.required],
       total: [this.data.form.total || '', Validators.required],
 
-      unidadUsa: [this.data.form.unidadUsa || ''],
-      unidadMx: [this.data.form.unidadMx || ''],
+      /* unidadUsa: [this.data.form.unidadUsa || ''],
+      unidadMx: [this.data.form.unidadMx || ''], */
+      unidadUsa: [this.data.form.unidadUsa || 'LB', Validators.required],
+      unidadMx: [{ value: this.unitMappings['LB'], disabled: true }, Validators.required], // Readonly MX unit
       cantidadUsa: [this.data.form.cantidadUsa || ''],
       cantidadMx: [this.data.form.cantidadMx || ''],
     });
@@ -293,15 +301,11 @@ export class ModalFormComponent implements OnInit{
     // throw new Error('Method not implemented.');
     this.loadCraftOptions();
     this.craftIdSuscription();
+    this.unidadUsaSubscription();
   }
 
   craftIdSuscription() {
-    /* this.bs = this.form.get('craftId')?.valueChanges.subscribe(valor => {
-     
-        console.log('craft id changes',  valor)
-
-    }); */
-    // this.bs.add(sub);
+    
     this.bs = this.form.get('craftId')?.valueChanges.subscribe(craftId => {
       console.log('craftId changes:', craftId);
   
@@ -317,30 +321,44 @@ export class ModalFormComponent implements OnInit{
     });
   }
 
+  unidadUsaSubscription() {
+    this.bs = this.form.get('unidadUsa')?.valueChanges.subscribe(unidadUsa => {
+      console.log('unidadUsa changes:', unidadUsa);
+  
+      // Mapping of USA to MX units
+      const unitMapping: { [key: string]: string } = {
+        'LB': 'KG',
+        'FT2': 'M2',
+        'FT3': 'M3',
+        'FT': 'ML'
+      };
+  
+      // Update unidadMx based on the selected unidadUsa
+      this.form.patchValue({
+        unidadMx: unitMapping[unidadUsa] || ''
+      });
+    });
+  }
+
   ngOnDestroy(): void {
     // Desuscribirse de todas las suscripciones para evitar pérdidas de memoria.
     this.bs?.unsubscribe();
   }
 
   async loadCraftOptions() {
-    /* this.http.get<{ value: string; label: string }[]>('/api/crafts').subscribe(
-      (options) => {
-        this.craftOptions = options;
-
-        // Ensure the selected craft is valid
-        const currentCraft = this.form.get('craft')?.value;
-        if (!options.some((option) => option.value === currentCraft)) {
-          this.form.get('craft')?.setValue('');
-        }
-      },
-      (error) => {
-        console.error('Error fetching craft options', error);
-      }
-    ); */
 
     const crafts = await this.apiservice.findAll('crafts').toPromise();
     console.log({crafts})
     this.craftOptions = crafts;
+  }
+
+  // Getter methods for Angular template
+  get usaUnits(): string[] {
+    return Object.keys(this.unitMappings);
+  }
+
+  get mxUnits(): string[] {
+    return Object.values(this.unitMappings);
   }
 
   onSubmit() {
