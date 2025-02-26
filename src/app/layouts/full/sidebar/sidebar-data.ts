@@ -10,60 +10,14 @@ export const navItems: NavItem[] = [
     route: '/dashboard',
   },
   {
-    displayName: 'Crafts',
-    iconName: 'solar:widget-add-line-duotone',
-    route: '/crafts',
-  },
-  {
     navCap: 'Ui Components',
     divider: true
-  },
-  {
-    displayName: 'Badge',
-    iconName: 'solar:archive-minimalistic-line-duotone',
-    route: '/ui-components/badge',
-  },
-  {
-    displayName: 'Chips',
-    iconName: 'solar:danger-circle-line-duotone',
-    route: '/ui-components/chips',
-  },
-  {
-    displayName: 'Lists',
-    iconName: 'solar:bookmark-square-minimalistic-line-duotone',
-    route: '/ui-components/lists',
-  },
-  {
-    displayName: 'Menu',
-    iconName: 'solar:file-text-line-duotone',
-    route: '/ui-components/menu',
-  },
-  {
-    displayName: 'Tooltips',
-    iconName: 'solar:text-field-focus-line-duotone',
-    route: '/ui-components/tooltips',
-  },
-  {
-    displayName: 'Forms',
-    iconName: 'solar:file-text-line-duotone',
-    route: '/ui-components/forms',
-  },
-  {
-    displayName: 'Tables',
-    iconName: 'solar:tablet-line-duotone',
-    route: '/ui-components/tables',
   },
   {
     displayName: 'Crafts',
     iconName: 'solar:tablet-line-duotone',
     //crear componente - catalogo
     route: '/ui-components/crafts',
-  },
-  {
-    displayName: 'Prueba Datatable Modales',
-    iconName: 'solar:tablet-line-duotone',
-    //crear componente - catalogo
-    route: '/ui-components/prueba-dtmodales',
   },
   {
     displayName: 'Areas',
@@ -90,19 +44,5 @@ export const navItems: NavItem[] = [
     displayName: 'Register',
     iconName: 'solar:user-plus-rounded-line-duotone',
     route: '/authentication/register',
-  },
-  {
-    navCap: 'Extra',
-    divider: true
-  },
-  {
-    displayName: 'Icons',
-    iconName: 'solar:sticker-smile-circle-2-line-duotone',
-    route: '/extra/icons',
-  },
-  {
-    displayName: 'Sample Page',
-    iconName: 'solar:planet-3-line-duotone',
-    route: '/extra/sample-page',
   },
 ];
