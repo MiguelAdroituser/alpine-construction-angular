@@ -302,6 +302,32 @@ export class ModalFormComponent implements OnInit{
     this.loadCraftOptions();
     this.craftIdSuscription();
     this.unidadUsaSubscription();
+    this.cantidadSubscription();
+  }
+
+  cantidadSubscription(): void {
+    this.form.get('cantidad')!.valueChanges.subscribe(value => {
+      const unidadUsa = this.form.get('unidadUsa')!.value;
+      const cantidadMx = this.convertToMxUnit(value, unidadUsa);
+
+      this.form.patchValue({
+        cantidadUsa: value,
+        cantidadMx: cantidadMx
+      }, { emitEvent: false }); // Prevent triggering valueChanges again
+    });
+  }
+
+  convertToMxUnit(value: number, unidadUsa: string): number {
+    if (!value || isNaN(value)) return 0;
+  
+    const conversionRates: { [key: string]: number } = {
+      'LB': 1 / 2.205, // Convert LB to KG
+      'FT2': 1 / 10.76, // Convert FT2 to M2
+      'FT3': 1 / 35.31, // Convert FT3 to M3
+      'FT': 1 / 3.28 // Convert FT to ML
+    };
+  
+    return conversionRates[unidadUsa] ? +(value * conversionRates[unidadUsa]).toFixed(2) : value;
   }
 
   craftIdSuscription() {

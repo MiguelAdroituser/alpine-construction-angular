@@ -71,6 +71,12 @@
       </mat-form-field>
 
       <mat-form-field appearance="fill">
+        <mat-label>Cantidad</mat-label>
+        <input matInput type="number" formControlName="cantidad" />
+        <mat-error *ngIf="form.get('cantidad')?.hasError('required')">Cantidad is required</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
         <mat-label>Price</mat-label>
         <input matInput type="number" formControlName="price" />
         <mat-error *ngIf="form.get('price')?.hasError('required')">Price is required</mat-error>
@@ -91,13 +97,7 @@
       </mat-form-field>
 
       <mat-form-field appearance="fill">
-        <mat-label>Cantidad</mat-label>
-        <input matInput type="number" formControlName="cantidad" />
-        <mat-error *ngIf="form.get('cantidad')?.hasError('required')">Cantidad is required</mat-error>
-      </mat-form-field>
-
-      <mat-form-field appearance="fill">
-        <mat-label>Disposal</mat-label>
+        <mat-label>Disposal(20%)</mat-label>
         <input matInput type="number" formControlName="disposal" />
         <mat-error *ngIf="form.get('disposal')?.hasError('required')">Disposal is required</mat-error>
       </mat-form-field>
@@ -122,13 +122,13 @@
 
       <mat-form-field appearance="fill">
         <mat-label>Cantidad USA</mat-label>
-        <input matInput formControlName="cantidadUsa" />
+        <input matInput formControlName="cantidadUsa" readonly/>
         <mat-error *ngIf="form.get('cantidadUsa')?.hasError('required')">cantidadUsa is required</mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="fill">
         <mat-label>Cantidad MX</mat-label>
-        <input matInput formControlName="cantidadMx" />
+        <input matInput formControlName="cantidadMx" readonly/>
         <mat-error *ngIf="form.get('cantidadMx')?.hasError('required')">cantidadMx is required</mat-error>
       </mat-form-field>
 
