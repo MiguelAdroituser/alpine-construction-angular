@@ -288,9 +288,6 @@ export class ModalFormComponent implements OnInit{
       totalCantidad: [this.data.form.totalCantidad || '', Validators.required],
       bidden: [this.data.form.bidden || '', Validators.required],
       total: [this.data.form.total || '', Validators.required],
-
-      /* unidadUsa: [this.data.form.unidadUsa || ''],
-      unidadMx: [this.data.form.unidadMx || ''], */
       unidadUsa: [this.data.form.unidadUsa || 'LB', Validators.required],
       unidadMx: [{ value: this.unitMappings['LB'], disabled: true }, Validators.required], // Readonly MX unit
       cantidadUsa: [this.data.form.cantidadUsa || ''],
@@ -310,9 +307,24 @@ export class ModalFormComponent implements OnInit{
       const unidadUsa = this.form.get('unidadUsa')!.value;
       const cantidadMx = this.convertToMxUnit(value, unidadUsa);
 
+      // Get selected craft and area from the form
+      const selectedCraft = this.form.get('craft')!.value;
+      const selectedArea = this.form.get('area')!.value;
+
+      // Find the craft object in the craftOptions array
+      const craft = this.craftOptions.find(c => c.name === selectedCraft && c.area === selectedArea);
+
+      // Get the price, default to 0 if not found
+      const price = craft ? ( craft.price * value ) : 0;
+      
+      // Calculate total price
+      // const total = price * value;
+
       this.form.patchValue({
         cantidadUsa: value,
-        cantidadMx: cantidadMx
+        cantidadMx: cantidadMx,
+        price: price, // Update the form's price field
+        // total: total  // Update the total field
       }, { emitEvent: false }); // Prevent triggering valueChanges again
     });
   }
