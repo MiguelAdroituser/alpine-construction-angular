@@ -291,7 +291,7 @@ export class ModalFormComponent implements OnInit{
       bidden: [this.data.form.bidden || '', Validators.required],
       total: [this.data.form.total || '', Validators.required],
       unidadUsa: [this.data.form.unidadUsa || 'LB', Validators.required],
-      unidadMx: [{ value: this.unitMappings['LB'], disabled: true }, Validators.required], // Readonly MX unit
+      unidadMx: [this.unitMappings['LB'], Validators.required], // Readonly MX unit
       cantidadUsa: [this.data.form.cantidadUsa || ''],
       cantidadMx: [this.data.form.cantidadMx || ''],
     });
