@@ -258,6 +258,8 @@ export class ModalFormComponent implements OnInit{
   private bs!: Subscription | undefined;
   craftOptions: Craft[] = [];
   directions: string[] = ['North', 'East', 'South', 'West'];
+  disposalPercentage = 0.2; // 20%
+  bidderPercentage = 0.05; // 5%
   unitMappings: { [key: string]: string } = {
     'LB': 'KG',
     'FT2': 'M2',
@@ -282,7 +284,7 @@ export class ModalFormComponent implements OnInit{
       area: [this.data.form.area || '', Validators.required],
       price: [this.data.form.price || '', Validators.required],
       direction: [this.data.form.direction || 'North', Validators.required],
-      type: [this.data.form.type || '', Validators.required],
+      type: [this.data.form.type || 'N/A', Validators.required],
       cantidad: [this.data.form.cantidad || '', Validators.required],
       disposal: [this.data.form.disposal || '', Validators.required],
       totalCantidad: [this.data.form.totalCantidad || '', Validators.required],
@@ -314,17 +316,29 @@ export class ModalFormComponent implements OnInit{
       // Find the craft object in the craftOptions array
       const craft = this.craftOptions.find(c => c.name === selectedCraft && c.area === selectedArea);
 
-      // Get the price, default to 0 if not found
+      // Get the price ( craft price * cantidad )
       const price = craft ? ( craft.price * value ) : 0;
       
-      // Calculate total price
-      // const total = price * value;
+      // Get bidden ( cantidad * 20% )
+      const disposal = Math.round(value * this.disposalPercentage);
+
+      //Get total cantidad ( cantidad + disposal )
+      const totalCantidad = value + disposal;
+
+      //Get Bidder ( price * 0.05 )
+      const bidder = price * this.bidderPercentage;
+
+      // Calculate total ( price - bidder )
+      const total = price - bidder;
 
       this.form.patchValue({
         cantidadUsa: value,
         cantidadMx: cantidadMx,
         price: price, // Update the form's price field
-        // total: total  // Update the total field
+        disposal: disposal,
+        totalCantidad: totalCantidad,
+        bidden: bidder,
+        total: total  // Update the total field
       }, { emitEvent: false }); // Prevent triggering valueChanges again
     });
   }
