@@ -24,6 +24,9 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { Subscription } from 'rxjs';
 
+//Nuevo Manuel
+import { MatCheckboxModule } from '@angular/material/checkbox';
+
 @Component({
   selector: 'app-areas',
   standalone: true,
@@ -97,6 +100,19 @@ export class AreasComponent implements OnInit, AfterViewInit {
       unidadMx: ['m3'],
       cantidadUsa: ['2345'],
       cantidadMx: ['2345'],
+
+
+      //NuevoManuel CheckBoxes
+      checkbox_Straight: [false],
+      checkbox_45_Angle: [false],
+      checkbox_Brick: [false],
+      checkbox_Random: [false],
+      checkbox_Designs: [false],
+      checkbox_Medalions: [false],
+      checkbox_Heated_Floors: [false],
+      checkbox_Steam_Showers: [false],
+      checkbox_Shower_Pan: [false],
+      checkbox_Benches: [false],
     });
 
     this.getAreas();
@@ -248,7 +264,8 @@ export class AreasComponent implements OnInit, AfterViewInit {
     MatButtonModule,
     MatGridListModule,
     MatSelectModule,
-    MatOptionModule
+    MatOptionModule,
+    MatCheckboxModule, //NuevoManuel CheckBoxes
   ],
   templateUrl: './areas-modal.component.html',
   styleUrls: ['./areas.component.scss']
@@ -266,7 +283,7 @@ export class ModalFormComponent implements OnInit{
     'FT3': 'M3',
     'FT': 'ML'
   };
-  
+
 
   constructor(
     private fb: FormBuilder,
@@ -294,7 +311,20 @@ export class ModalFormComponent implements OnInit{
       unidadMx: [this.unitMappings['LB'], Validators.required], // Readonly MX unit
       cantidadUsa: [this.data.form.cantidadUsa || ''],
       cantidadMx: [this.data.form.cantidadMx || ''],
+
+      //NuevoManuel Checkboxes
+      checkbox_Straight: [this.data.form.checkbox_Straight || false],
+      checkbox_45_Angle: [this.data.form.checkbox_45_Angle || false],
+      checkbox_Brick: [this.data.form.checkbox_Brick || false],
+      checkbox_Random: [this.data.form.checkbox_Random || false],
+      checkbox_Designs: [this.data.form.checkbox_Designs || false],
+      checkbox_Medalions: [this.data.form.checkbox_Medalions || false],
+      checkbox_Heated_Floors: [this.data.form.checkbox_Heated_Floors || false],
+      checkbox_Steam_Showers: [this.data.form.checkbox_Steam_Showers || false],
+      checkbox_Shower_Pan: [this.data.form.checkbox_Shower_Pan || false],
+      checkbox_Benches: [this.data.form.checkbox_Benches || false],
     });
+    this.listenToCheckboxChanges(); // Agregar función para actualizar el campo price
   }
   ngOnInit(): void {
     // throw new Error('Method not implemented.');
@@ -302,7 +332,134 @@ export class ModalFormComponent implements OnInit{
     this.craftIdSuscription();
     this.unidadUsaSubscription();
     this.cantidadSubscription();
+
+    //Nuevo Manuel Checkboxes
+    //Habilitar o deshabilitar checkboxes segun el campo area
+    this.updateCheckboxes(null);
+    this.form.get('area')?.valueChanges.subscribe(value => {
+
+      this.resetCheckboxes();
+
+      if (value === 'Flooring' || value === 'Walls' || value === 'Showers') {
+        this.updateCheckboxes(value);
+      } else {
+        this.updateCheckboxes(null); // Deshabilita todos los checkboxes si no es una opción válida
+      }
+    });
   }
+
+  //Nuevo Manuel Checkboxes
+  updateCheckboxes(area: 'Flooring' | 'Walls' | 'Showers' | null) {
+    const checkboxes: Record<'Flooring' | 'Walls' | 'Showers', string[]> = {
+      Flooring: ['checkbox_Straight', 'checkbox_45_Angle', 'checkbox_Brick', 'checkbox_Random', 'checkbox_Designs', 'checkbox_Medalions', 'checkbox_Heated_Floors'],
+      Walls: ['checkbox_Straight', 'checkbox_45_Angle', 'checkbox_Brick', 'checkbox_Random', 'checkbox_Designs'],
+      Showers: ['checkbox_Steam_Showers', 'checkbox_Shower_Pan', 'checkbox_Benches']
+    };
+  
+    // Deshabilitar todos los checkboxes
+    Object.keys(this.form.controls).forEach(key => {
+      if (key.startsWith('checkbox_')) {
+        this.form.get(key)?.disable();
+      }
+    });
+
+    // Si el área seleccionada es válida, habilitar solo los checkboxes correspondientes
+    if (area && checkboxes[area]) {
+      checkboxes[area].forEach(name => {
+        this.form.get(name)?.enable();
+      });
+    }
+  
+  }
+  
+  // Función para desmarcar todos los checkboxes
+  resetCheckboxes() {
+    // Aquí desmarcamos todos los checkboxes
+    const checkboxNames = [
+      'checkbox_Straight',
+      'checkbox_45_Angle',
+      'checkbox_Brick',
+      'checkbox_Random',
+      'checkbox_Designs',
+      'checkbox_Medalions',
+      'checkbox_Heated_Floors',
+      'checkbox_Steam_Showers',
+      'checkbox_Shower_Pan',
+      'checkbox_Benches'
+    ];
+    
+    checkboxNames.forEach(name => {
+      this.form.get(name)?.setValue(false);  // Desmarcar el checkbox
+      this.form.get(name)?.disable();        // Deshabilitar el checkbox
+    });
+  }
+
+  //Actualizar campo price con los checkboxes
+  private listenToCheckboxChanges() {
+    const checkboxFields = [
+      'checkbox_Straight',
+      'checkbox_45_Angle',
+      'checkbox_Brick',
+      'checkbox_Random',
+      'checkbox_Designs',
+      'checkbox_Medalions',
+      'checkbox_Heated_Floors',
+      'checkbox_Steam_Showers',
+      'checkbox_Shower_Pan',
+      'checkbox_Benches',
+    ];
+  
+    // Precios según el área seleccionada
+    const prices: { [key: string]: { [key: string]: number } } = {
+      Flooring: {
+        checkbox_Straight: 16,
+        checkbox_45_Angle: 18,
+        checkbox_Brick: 16.25,
+        checkbox_Random: 16.50,
+        checkbox_Designs: 70,
+        checkbox_Medalions: 1500,
+        checkbox_Heated_Floors: 21,
+      },
+      Walls: {
+        checkbox_Straight: 20,
+        checkbox_45_Angle: 22,
+        checkbox_Brick: 21,
+        checkbox_Random: 21,
+        checkbox_Designs: 65,
+      },
+      Showers: {
+        checkbox_Steam_Showers: 0,
+        checkbox_Shower_Pan: 0,
+        checkbox_Benches: 0,
+      }
+    };
+  
+    this.form.valueChanges.subscribe(() => {
+      let basePrice = this.data.form.price || 0;
+      let additionalCost = 0;
+      const area = this.form.get('area')?.value; 
+  
+      //if (!area || !prices[area]) return; // Si no hay área válida, no hace nada
+      // Si no se selecciona un área válida, se resetea el precio a 0
+      if (!area || !prices[area]) {
+        this.form.patchValue({ price: 0 }, { emitEvent: false });
+        return;
+      }
+  
+      // Calcular el precio adicional basado en los checkboxes seleccionados
+      checkboxFields.forEach(field => {
+        if (this.form.get(field)?.value && prices[area][field]) {
+          additionalCost += prices[area][field];
+        }
+      });
+      
+      // Actualizar el precio total
+      this.form.patchValue({ price: basePrice + additionalCost }, { emitEvent: false });
+    });
+  }
+  
+  
+
 
   cantidadSubscription(): void {
     this.form.get('cantidad')!.valueChanges.subscribe(value => {
