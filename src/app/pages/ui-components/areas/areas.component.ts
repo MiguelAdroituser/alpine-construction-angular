@@ -96,10 +96,10 @@ export class AreasComponent implements OnInit, AfterViewInit {
       bidden: ['', Validators.required],
       total: ['', Validators.required],
 
-      unidadUsa: ['sqft'],
-      unidadMx: ['m3'],
-      cantidadUsa: ['2345'],
-      cantidadMx: ['2345'],
+      unidadUsa: [''],
+      unidadMx: [''],
+      cantidadUsa: [''],
+      cantidadMx: [''],
 
 
       //NuevoManuel CheckBoxes
@@ -324,7 +324,9 @@ export class ModalFormComponent implements OnInit{
       checkbox_Shower_Pan: [this.data.form.checkbox_Shower_Pan || false],
       checkbox_Benches: [this.data.form.checkbox_Benches || false],
     });
+
     this.listenToCheckboxChanges(); // Agregar función para actualizar el campo price
+
   }
   ngOnInit(): void {
     // throw new Error('Method not implemented.');
@@ -434,7 +436,11 @@ export class ModalFormComponent implements OnInit{
       }
     };
   
-    this.form.valueChanges.subscribe(() => {
+    //TODO: este suscribe solo debe escuchar los cambios de todos los checkboxes existentes,
+    //para permitir que se actualicé el price al ingresar la cantidad. 
+    /* this.form.valueChanges.subscribe(() => {
+      console.log('listenenr')
+
       let basePrice = this.data.form.price || 0;
       let additionalCost = 0;
       const area = this.form.get('area')?.value; 
@@ -455,7 +461,33 @@ export class ModalFormComponent implements OnInit{
       
       // Actualizar el precio total
       this.form.patchValue({ price: basePrice + additionalCost }, { emitEvent: false });
+    }); */
+
+    // Subscribe **only** to checkbox field changes
+  checkboxFields.forEach(field => {
+    this.form.get(field)?.valueChanges.subscribe(() => {
+      console.log(`Checkbox ${field} changed`);
+
+      let basePrice = this.data.form.price || 0;
+      let additionalCost = 0;
+      const area = this.form.get('area')?.value; 
+
+      if (!area || !prices[area]) {
+        this.form.patchValue({ price: 0 }, { emitEvent: false });
+        return;
+      }
+
+      // Calculate additional cost based on selected checkboxes
+      checkboxFields.forEach(field => {
+        if (this.form.get(field)?.value && prices[area][field]) {
+          additionalCost += prices[area][field];
+        }
+      });
+
+      // Update the total price
+      this.form.patchValue({ price: basePrice + additionalCost }, { emitEvent: false });
     });
+  });
   }
   
   
