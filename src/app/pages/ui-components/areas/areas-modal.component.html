@@ -16,7 +16,7 @@
       <!-- MX Unit Selection (Readonly) -->
       <mat-form-field appearance="fill">
         <mat-label>MX Unit</mat-label>
-        <mat-select formControlName="unidadMx" readonly>
+        <mat-select formControlName="unidadMx" [disabled]="true">
           <mat-option *ngFor="let unit of mxUnits" [value]="unit">
             {{ unit }}
           </mat-option>
