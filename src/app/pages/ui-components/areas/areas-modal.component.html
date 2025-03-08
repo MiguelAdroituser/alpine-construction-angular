@@ -60,7 +60,7 @@
 
       <mat-form-field appearance="fill">
         <mat-label>Cantidad</mat-label>
-        <input matInput type="number" formControlName="cantidad" />
+        <input matInput type="number" formControlName="cantidad"/>
         <mat-error *ngIf="form.get('cantidad')?.hasError('required')">Cantidad is required</mat-error>
       </mat-form-field>
 

@@ -284,6 +284,44 @@ export class ModalFormComponent implements OnInit{
     'FT': 'ML'
   };
 
+  checkboxFields = [
+    'checkbox_Straight',
+    'checkbox_45_Angle',
+    'checkbox_Brick',
+    'checkbox_Random',
+    'checkbox_Designs',
+    'checkbox_Medalions',
+    'checkbox_Heated_Floors',
+    'checkbox_Steam_Showers',
+    'checkbox_Shower_Pan',
+    'checkbox_Benches',
+  ];
+
+  // Precios según el área seleccionada
+  prices: { [key: string]: { [key: string]: number } } = {
+    Flooring: {
+      checkbox_Straight: 16,
+      checkbox_45_Angle: 18,
+      checkbox_Brick: 16.25,
+      checkbox_Random: 16.50,
+      checkbox_Designs: 70,
+      checkbox_Medalions: 1500,
+      checkbox_Heated_Floors: 21,
+    },
+    Walls: {
+      checkbox_Straight: 20,
+      checkbox_45_Angle: 22,
+      checkbox_Brick: 21,
+      checkbox_Random: 21,
+      checkbox_Designs: 65,
+    },
+    Showers: {
+      checkbox_Steam_Showers: 0,
+      checkbox_Shower_Pan: 0,
+      checkbox_Benches: 0,
+    }
+  };
+
 
   constructor(
     private fb: FormBuilder,
@@ -302,7 +340,8 @@ export class ModalFormComponent implements OnInit{
       price: [this.data.form.price || '', Validators.required],
       direction: [this.data.form.direction || 'North', Validators.required],
       type: [this.data.form.type || 'N/A', Validators.required],
-      cantidad: [this.data.form.cantidad || '', Validators.required],
+      // cantidad: [this.data.form.cantidad || '', Validators.required],
+      cantidad: [{ value: this.data.form.cantidad || '', disabled: !this.data.form.area }, Validators.required],
       disposal: [this.data.form.disposal || '', Validators.required],
       totalCantidad: [this.data.form.totalCantidad || '', Validators.required],
       bidden: [this.data.form.bidden || '', Validators.required],
@@ -326,7 +365,7 @@ export class ModalFormComponent implements OnInit{
     });
 
     this.listenToCheckboxChanges(); // Agregar función para actualizar el campo price
-
+    // this.areaSubscription();
   }
   ngOnInit(): void {
     // throw new Error('Method not implemented.');
@@ -334,11 +373,23 @@ export class ModalFormComponent implements OnInit{
     this.craftIdSuscription();
     this.unidadUsaSubscription();
     this.cantidadSubscription();
+    this.areaSubscription();
 
-    //Nuevo Manuel Checkboxes
     //Habilitar o deshabilitar checkboxes segun el campo area
     this.updateCheckboxes(null);
+    
+  }
+  
+  areaSubscription() {
     this.form.get('area')?.valueChanges.subscribe(value => {
+
+      console.log('value suscription', value)
+
+      if (!value) {
+        this.form.get('cantidad')?.disable();
+      } else {
+        this.form.get('cantidad')?.enable();
+      }
 
       this.resetCheckboxes();
 
@@ -397,90 +448,27 @@ export class ModalFormComponent implements OnInit{
   }
 
   //Actualizar campo price con los checkboxes
-  private listenToCheckboxChanges() {
-    const checkboxFields = [
-      'checkbox_Straight',
-      'checkbox_45_Angle',
-      'checkbox_Brick',
-      'checkbox_Random',
-      'checkbox_Designs',
-      'checkbox_Medalions',
-      'checkbox_Heated_Floors',
-      'checkbox_Steam_Showers',
-      'checkbox_Shower_Pan',
-      'checkbox_Benches',
-    ];
-  
-    // Precios según el área seleccionada
-    const prices: { [key: string]: { [key: string]: number } } = {
-      Flooring: {
-        checkbox_Straight: 16,
-        checkbox_45_Angle: 18,
-        checkbox_Brick: 16.25,
-        checkbox_Random: 16.50,
-        checkbox_Designs: 70,
-        checkbox_Medalions: 1500,
-        checkbox_Heated_Floors: 21,
-      },
-      Walls: {
-        checkbox_Straight: 20,
-        checkbox_45_Angle: 22,
-        checkbox_Brick: 21,
-        checkbox_Random: 21,
-        checkbox_Designs: 65,
-      },
-      Showers: {
-        checkbox_Steam_Showers: 0,
-        checkbox_Shower_Pan: 0,
-        checkbox_Benches: 0,
-      }
-    };
-  
-    //TODO: este suscribe solo debe escuchar los cambios de todos los checkboxes existentes,
-    //para permitir que se actualicé el price al ingresar la cantidad. 
-    /* this.form.valueChanges.subscribe(() => {
-      console.log('listenenr')
-
-      let basePrice = this.data.form.price || 0;
-      let additionalCost = 0;
-      const area = this.form.get('area')?.value; 
-  
-      //if (!area || !prices[area]) return; // Si no hay área válida, no hace nada
-      // Si no se selecciona un área válida, se resetea el precio a 0
-      if (!area || !prices[area]) {
-        this.form.patchValue({ price: 0 }, { emitEvent: false });
-        return;
-      }
-  
-      // Calcular el precio adicional basado en los checkboxes seleccionados
-      checkboxFields.forEach(field => {
-        if (this.form.get(field)?.value && prices[area][field]) {
-          additionalCost += prices[area][field];
-        }
-      });
-      
-      // Actualizar el precio total
-      this.form.patchValue({ price: basePrice + additionalCost }, { emitEvent: false });
-    }); */
+  /* private listenToCheckboxChanges() {
 
     // Subscribe **only** to checkbox field changes
-  checkboxFields.forEach(field => {
+  this.checkboxFields.forEach(field => {
     this.form.get(field)?.valueChanges.subscribe(() => {
       console.log(`Checkbox ${field} changed`);
 
-      let basePrice = this.data.form.price || 0;
+      // let basePrice = this.data.form.price || 0;
+      let basePrice = this.form.get('price')?.value;
       let additionalCost = 0;
       const area = this.form.get('area')?.value; 
 
-      if (!area || !prices[area]) {
+      if (!area || !this.prices[area]) {
         this.form.patchValue({ price: 0 }, { emitEvent: false });
         return;
       }
 
       // Calculate additional cost based on selected checkboxes
-      checkboxFields.forEach(field => {
-        if (this.form.get(field)?.value && prices[area][field]) {
-          additionalCost += prices[area][field];
+      this.checkboxFields.forEach(field => {
+        if (this.form.get(field)?.value && this.prices[area][field]) {
+          additionalCost += this.prices[area][field];
         }
       });
 
@@ -488,10 +476,35 @@ export class ModalFormComponent implements OnInit{
       this.form.patchValue({ price: basePrice + additionalCost }, { emitEvent: false });
     });
   });
+  } */
+  
+  private listenToCheckboxChanges() {
+    this.checkboxFields.forEach(field => {
+      this.form.get(field)?.valueChanges.subscribe((isChecked: boolean) => {
+
+        //Si no existe una cantidad, no realizar la sumatoria o resta de checkboxes.
+        if ( this.form.get('cantidad')?.value === '' ) return;
+
+         const area = this.form.get('area')?.value;
+        /*if (!area || !this.prices[area]) {
+          this.form.patchValue({ price: 0 }, { emitEvent: false });
+          return;
+        } */
+  
+        // Get current price
+        let currentPrice = this.form.get('price')?.value || 0;
+        let fieldPrice = this.prices[area][field] || 0;
+  
+        // Add or subtract based on checkbox state
+        currentPrice = isChecked ? currentPrice + fieldPrice : currentPrice - fieldPrice;
+  
+        // Update the price
+        this.form.patchValue({ price: currentPrice }, { emitEvent: false });
+      });
+    });
   }
   
   
-
 
   cantidadSubscription(): void {
     this.form.get('cantidad')!.valueChanges.subscribe(value => {
