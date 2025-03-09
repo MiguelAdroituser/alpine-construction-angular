@@ -274,7 +274,7 @@ export class ModalFormComponent implements OnInit{
   form: FormGroup;
   private bs!: Subscription | undefined;
   craftOptions: Craft[] = [];
-  directions: string[] = ['North', 'East', 'South', 'West'];
+  directions: string[] = ['North', 'East', 'South', 'West', 'Ceiling', 'Floor']; //Edicion Manuel
   disposalPercentage = 0.2; // 20%
   bidderPercentage = 0.05; // 5%
   unitMappings: { [key: string]: string } = {
