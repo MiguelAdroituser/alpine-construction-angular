@@ -385,11 +385,9 @@ export class ModalFormComponent implements OnInit{
 
       console.log('value suscription', value)
 
-      if (!value) {
-        this.form.get('cantidad')?.disable();
-      } else {
-        this.form.get('cantidad')?.enable();
-      }
+      if (!value) this.form.get('cantidad')?.disable();
+      else this.form.get('cantidad')?.enable();
+      
 
       this.resetCheckboxes();
 
@@ -482,6 +480,7 @@ export class ModalFormComponent implements OnInit{
     this.checkboxFields.forEach(field => {
       this.form.get(field)?.valueChanges.subscribe((isChecked: boolean) => {
 
+        console.log('logs');
         //Si no existe una cantidad, no realizar la sumatoria o resta de checkboxes.
         if ( this.form.get('cantidad')?.value === '' ) return;
 
@@ -519,7 +518,16 @@ export class ModalFormComponent implements OnInit{
       const craft = this.craftOptions.find(c => c.name === selectedCraft && c.area === selectedArea);
 
       // Get the price ( craft price * cantidad )
-      const price = craft ? ( craft.price * value ) : 0;
+      let price = craft ? ( craft.price * value ) : 0;
+
+      // 👉 Check which checkboxes are selected and add their prices
+    if (selectedArea && this.prices[selectedArea]) {
+      this.checkboxFields.forEach(field => {
+        if (this.form.get(field)?.value) {  // If checkbox is selected
+          price += this.prices[selectedArea][field] || 0;
+        }
+      });
+    }
       
       // Get bidden ( cantidad * 20% )
       const disposal = Math.round(value * this.disposalPercentage);
@@ -543,6 +551,8 @@ export class ModalFormComponent implements OnInit{
         total: total  // Update the total field
       }, { emitEvent: false }); // Prevent triggering valueChanges again
     });
+
+    // this.listenToCheckboxChanges();
   }
 
   convertToMxUnit(value: number, unidadUsa: string): number {
