@@ -445,36 +445,6 @@ export class ModalFormComponent implements OnInit{
     });
   }
 
-  //Actualizar campo price con los checkboxes
-  /* private listenToCheckboxChanges() {
-
-    // Subscribe **only** to checkbox field changes
-  this.checkboxFields.forEach(field => {
-    this.form.get(field)?.valueChanges.subscribe(() => {
-      console.log(`Checkbox ${field} changed`);
-
-      // let basePrice = this.data.form.price || 0;
-      let basePrice = this.form.get('price')?.value;
-      let additionalCost = 0;
-      const area = this.form.get('area')?.value; 
-
-      if (!area || !this.prices[area]) {
-        this.form.patchValue({ price: 0 }, { emitEvent: false });
-        return;
-      }
-
-      // Calculate additional cost based on selected checkboxes
-      this.checkboxFields.forEach(field => {
-        if (this.form.get(field)?.value && this.prices[area][field]) {
-          additionalCost += this.prices[area][field];
-        }
-      });
-
-      // Update the total price
-      this.form.patchValue({ price: basePrice + additionalCost }, { emitEvent: false });
-    });
-  });
-  } */
   
   private listenToCheckboxChanges() {
     this.checkboxFields.forEach(field => {
@@ -502,8 +472,6 @@ export class ModalFormComponent implements OnInit{
       });
     });
   }
-  
-  
 
   cantidadSubscription(): void {
     this.form.get('cantidad')!.valueChanges.subscribe(value => {
@@ -520,7 +488,7 @@ export class ModalFormComponent implements OnInit{
       // Get the price ( craft price * cantidad )
       let price = craft ? ( craft.price * value ) : 0;
 
-      // 👉 Check which checkboxes are selected and add their prices
+      // Check which checkboxes are selected and add their prices
     if (selectedArea && this.prices[selectedArea]) {
       this.checkboxFields.forEach(field => {
         if (this.form.get(field)?.value) {  // If checkbox is selected
