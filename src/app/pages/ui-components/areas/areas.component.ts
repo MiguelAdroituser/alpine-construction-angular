@@ -396,6 +396,9 @@ export class ModalFormComponent implements OnInit{
       } else {
         this.updateCheckboxes(null); // Deshabilita todos los checkboxes si no es una opción válida
       }
+
+      //this.recalculateValues(); // Recalculate after updating craft and area
+      
     });
   }
 
@@ -420,6 +423,9 @@ export class ModalFormComponent implements OnInit{
         this.form.get(name)?.enable();
       });
     }
+
+    // Trigger recalculation after updating checkboxes
+  this.recalculateValues();
   
   }
   
@@ -545,12 +551,19 @@ export class ModalFormComponent implements OnInit{
       // Find the selected craft from craftOptions
       const selectedCraft = this.craftOptions.find(option => option._id === craftId);
   
-      if (selectedCraft) {
-        this.form.patchValue({
-          craft: selectedCraft.name,
-          area: selectedCraft.area
-        });
-      }
+      // Prevent areaSubscription from triggering recursively
+  
+        if (selectedCraft) {
+          this.form.patchValue({
+            craft: selectedCraft.name,
+            area: selectedCraft.area
+          });
+        }
+
+        // this.recalculateValues(); // Recalculate after updating craft and area
+      
+
+
     });
   }
 
