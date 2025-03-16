@@ -475,7 +475,7 @@ export class ModalFormComponent implements OnInit{
 
   cantidadSubscription(): void {
     this.form.get('cantidad')!.valueChanges.subscribe(value => {
-      const unidadUsa = this.form.get('unidadUsa')!.value;
+      /* const unidadUsa = this.form.get('unidadUsa')!.value;
       const cantidadMx = this.convertToMxUnit(value, unidadUsa);
 
       // Get selected craft and area from the form
@@ -517,7 +517,8 @@ export class ModalFormComponent implements OnInit{
         totalCantidad: totalCantidad,
         bidden: bidder,
         total: total  // Update the total field
-      }, { emitEvent: false }); // Prevent triggering valueChanges again
+      }, { emitEvent: false }); // Prevent triggering valueChanges again */
+      this.recalculateValues();
     });
 
     // this.listenToCheckboxChanges();
@@ -569,8 +570,48 @@ export class ModalFormComponent implements OnInit{
       this.form.patchValue({
         unidadMx: unitMapping[unidadUsa] || ''
       });
+
+      // Trigger recalculation manually
+      this.recalculateValues();
+
     });
   }
+
+  recalculateValues() {
+    const value = this.form.get('cantidad')!.value;
+    const unidadUsa = this.form.get('unidadUsa')!.value;
+    const cantidadMx = this.convertToMxUnit(value, unidadUsa);
+  
+    const selectedCraft = this.form.get('craft')!.value;
+    const selectedArea = this.form.get('area')!.value;
+    const craft = this.craftOptions.find(c => c.name === selectedCraft && c.area === selectedArea);
+  
+    let price = craft ? (craft.price * value) : 0;
+  
+    if (selectedArea && this.prices[selectedArea]) {
+      this.checkboxFields.forEach(field => {
+        if (this.form.get(field)?.value) {
+          price += this.prices[selectedArea][field] || 0;
+        }
+      });
+    }
+  
+    const disposal = Math.round(value * this.disposalPercentage);
+    const totalCantidad = value + disposal;
+    const bidder = price * this.bidderPercentage;
+    const total = price - bidder;
+  
+    this.form.patchValue({
+      cantidadUsa: value,
+      cantidadMx: cantidadMx,
+      price: price,
+      disposal: disposal,
+      totalCantidad: totalCantidad,
+      bidden: bidder,
+      total: total
+    }, { emitEvent: false }); // Prevents infinite loops
+  }
+  
 
   ngOnDestroy(): void {
     // Desuscribirse de todas las suscripciones para evitar pérdidas de memoria.
