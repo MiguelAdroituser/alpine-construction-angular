@@ -17,6 +17,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatGridListModule } from '@angular/material/grid-list';
 
 
+
 @Component({
   selector: 'app-customers',
   standalone: true,
@@ -41,6 +42,11 @@ export class CustomersComponent implements OnInit, AfterViewInit {
    // table 1
    displayedColumns: string[] = [
     'customerName', 
+    'companyName',
+    'phoneNumber',
+    'emailAddress',
+    'address',
+    'registrationDate',
     'projectName', 
     //'userId', 
     'actions'
@@ -58,9 +64,15 @@ export class CustomersComponent implements OnInit, AfterViewInit {
    ) {
 
     this.form = this.fb.group({
-      customerName: ['', Validators.required],
+      customerName: [''],
+      companyName: [''],
+      phoneNumber: ['', Validators.required],
+      emailAddress: ['', Validators.required],
+      address: ['', Validators.required],
+      registrationDate: [{ value: new Date(), disabled: true }],
+
       projectName: ['', Validators.required],
-      //userId: ['', Validators.required],
+      
     });
 
     this.getCustomers();
@@ -179,17 +191,45 @@ export class ModalFormComponent {
     // Initialize the form with the passed data (element)
     this.form = this.fb.group({
       _id: [this.data.form._id || ''],
-      customerName: [this.data.form.customerName || '', Validators.required],
+      customerName: [this.data.form.customerName || ''],
+      companyName: [this.data.form.companyName || ''],
+      phoneNumber: [this.data.form.phoneNumber || '', Validators.required],
+      emailAddress: [this.data.form.emailAddress || '', Validators.required],
+      address: [this.data.form.address || '', Validators.required],
+      registrationDate: [{ value: this.getLocalDate(), disabled: true }],    
       projectName: [this.data.form.projectName || '', Validators.required],
       //userId: [this.data.form.userId || '', Validators.required],
     });
   }
 
-  onSubmit() {
+  getLocalDate() {
+    const date = new Date();
+    // Ajusta la hora a las 00:00 del día actual (puedes personalizar si lo deseas)
+    date.setHours(0, 0, 0, 0); 
+    return date;
+  }
+  
+  
+  
+  
+
+
+  /*onSubmit() {
     if (this.form.valid) {
       this.dialogRef.close(this.form.value); // Cierra el modal y pasa los datos
     }
-  }
+  }*/
+
+    onSubmit() {
+      if (this.form.valid) {
+        const formData = {
+          ...this.form.value,
+          registrationDate: this.data.form.registrationDate || this.getLocalDate() // Si ya existe, usa esa; si no, genera una nueva
+        };
+        this.dialogRef.close(formData); // Cierra el modal y pasa los datos
+      }
+    }
+    
 
   onClose() {
     this.dialogRef.close(); // Cierra el modal sin enviar datos
