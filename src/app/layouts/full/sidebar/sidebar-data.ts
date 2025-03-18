@@ -32,6 +32,12 @@ export const navItems: NavItem[] = [
     route: '/ui-components/customers',
   },
   {
+    displayName: 'Projects',
+    iconName: 'solar:tablet-line-duotone',
+    //New Catalog
+    route: '/ui-components/projects',
+  },
+  {
     navCap: 'Auth',
     divider: true
   },

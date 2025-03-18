@@ -1,0 +1,73 @@
+<!-- Customer select -->
+<div class="row">
+    <div class="col-lg-4">
+      <mat-label class="f-w-600 m-b-8 d-block">Customer</mat-label>
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-select [(value)]="selectedCustomer" (selectionChange)="onCustomerChange($event.value)">
+          @for(option of customers; track option._id) {
+          <mat-option [value]="option._id">
+            {{ option.customerName }}
+          </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+  
+  <!-- Contenedor para el filtro y el botón -->
+  <div class="filter-container m-t-24">
+  
+      <!-- Campo de búsqueda -->
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Projects</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="Type to filter results" />
+      </mat-form-field>
+    
+      <!-- Botón -->
+      <mat-card-content class="button-container">
+        <button mat-flat-button color="primary" matTooltip="Add a new item" (click)="openModal({})">
+          Add
+        </button>
+      </mat-card-content>
+    
+  </div>
+    
+  <mat-card class="cardWithShadow">
+    <mat-card-content>
+      <mat-card-title>Projects</mat-card-title>
+  
+      <div class="table-responsive">
+        <!-- Tabla -->
+        <table mat-table [dataSource]="dataSource" class="">
+  
+            <!-- Columna: Room -->
+            <ng-container matColumnDef="projectName">
+            <th mat-header-cell *matHeaderCellDef> Project Name </th>
+            <td mat-cell *matCellDef="let element"> {{ element.projectName }} </td>
+            </ng-container>
+    
+            <!-- Columna: RoomName -->
+            <ng-container matColumnDef="registrationDate">
+            <th mat-header-cell *matHeaderCellDef> Date </th>
+            <td mat-cell *matCellDef="let element"> {{ element.registrationDate }} </td>
+            </ng-container>
+            
+            <!-- Columna: Actions -->
+            <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef> Actions </th>
+            <td mat-cell *matCellDef="let element">
+                <button mat-button color="primary" (click)="openModal(element)">Edit</button>
+            </td>
+            </ng-container>
+    
+            <!-- Fila de encabezados -->
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <!-- Fila de datos -->
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      </div>
+      <!-- Paginador -->
+      <mat-paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 20]"></mat-paginator>
+  
+    </mat-card-content>
+  </mat-card>

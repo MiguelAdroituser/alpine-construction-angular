@@ -6,6 +6,7 @@ import { CraftsComponent } from './crafts/crafts.component';
 //Prueba
 import { AreasComponent } from './areas/areas.component';
 import { CustomersComponent } from './customers/customers.component';
+import { ProjectsComponent } from './projects/projects.component';
 
 
 export const UiComponentsRoutes: Routes = [
@@ -23,6 +24,10 @@ export const UiComponentsRoutes: Routes = [
       {
         path: 'customers',
         component: CustomersComponent,
+      },
+      {
+        path: 'projects',
+        component: ProjectsComponent,
       },
     ],
   },

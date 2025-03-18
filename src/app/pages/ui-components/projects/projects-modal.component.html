@@ -1,0 +1,28 @@
+<h2 mat-dialog-title>Projects</h2>
+<mat-dialog-content>
+  <form [formGroup]="form">
+    <div class="form-grid">
+
+      <mat-form-field appearance="fill">
+        <mat-label>Project Name</mat-label>
+        <input matInput type="text" formControlName="projectName" />
+        <mat-error *ngIf="form.get('projectName')?.hasError('required')">projectName is required</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Registration Date</mat-label>
+        <input matInput formControlName="registrationDate" />
+        <mat-error *ngIf="form.get('registrationDate')?.hasError('required')">registrationDate is required</mat-error>
+      </mat-form-field>
+
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onClose()">Cancel</button>
+  <button mat-flat-button color="primary" (click)="onSubmit()" [disabled]="form.invalid">
+    Submit
+  </button>
+</mat-dialog-actions>
+
