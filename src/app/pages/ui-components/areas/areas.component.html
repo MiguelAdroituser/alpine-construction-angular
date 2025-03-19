@@ -1,17 +1,33 @@
 <!-- Customer and projects select -->
 <div class="row">
+  <!-- Customer Selection -->
   <div class="col-lg-4">
-    <mat-label class="f-w-600 m-b-8 d-block">Customer - Project</mat-label>
+    <mat-label class="f-w-600 m-b-8 d-block">Customer</mat-label>
     <mat-form-field appearance="outline" class="w-100">
       <mat-select [(value)]="selectedCustomer" (selectionChange)="onCustomerChange($event.value)">
         @for(option of customers; track option._id) {
         <mat-option [value]="option._id">
-          {{ option.customerName }} - {{ option.projectName }}
+          {{ option.customerName }}
         </mat-option>
         }
       </mat-select>
     </mat-form-field>
   </div>
+
+  <!-- Project Selection -->
+  <div class="col-lg-4">
+    <mat-label class="f-w-600 m-b-8 d-block">Project</mat-label>
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-select [(value)]="selectedProject" (selectionChange)="onProjectChange($event.value)">
+        @for(option of projects; track option._id) {
+        <mat-option [value]="option._id">
+          {{ option.projectName }}
+        </mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  </div>
+
 </div>
 
 <!-- Contenedor para el filtro y el botón -->

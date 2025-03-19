@@ -26,6 +26,7 @@ import { Subscription } from 'rxjs';
 
 //Nuevo Manuel
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { Project } from 'src/app/interfaces/projects.interface';
 
 @Component({
   selector: 'app-areas',
@@ -72,8 +73,10 @@ export class AreasComponent implements OnInit, AfterViewInit {
 
   /* Customers config selector */
   customers: Customer[] = [];
+  projects: Project[] = [];
 
   selectedCustomer: string | null = null;
+  selectedProject: string | null = null;
 
   constructor( 
     private apiservice: ApiService<AreaInterface>, 
@@ -115,7 +118,7 @@ export class AreasComponent implements OnInit, AfterViewInit {
       checkbox_Benches: [false],
     });
 
-    this.getAreas();
+    // this.getAreas();
     this.getCustomers();
     // this.getCrafts();
 
@@ -132,7 +135,9 @@ export class AreasComponent implements OnInit, AfterViewInit {
   }
   
   async getAreas(){
-    const params = new HttpParams().set('customerId', this.selectedCustomer || '');
+    const params = new HttpParams()
+    .set('customerId', this.selectedCustomer || '')
+    .set('projectId', this.selectedProject || '');
     
     try {
 
@@ -207,9 +212,54 @@ export class AreasComponent implements OnInit, AfterViewInit {
     const selected = this.customers.find(c => c._id === customerId);
     if (selected) {
       console.log('Selected Customer:', selected);
-      this.getAreas();
+
+      // this.getAreas();
+      this.getProjects();
       // Perform additional logic here (e.g., update another field)
     }
+  }
+
+  onProjectChange(projectId: string | null) {
+    console.log('Selected Project ID:', projectId);
+  
+    // Find the selected project object
+    const selected = this.projects.find(p => p._id === projectId);
+    if (selected) {
+      console.log('Selected Project:', selected);
+      
+      // Store the selected project ID
+      // this.selectedProject = selected._id;
+      
+      // Fetch areas based on the selected customer and project
+      this.getAreas();
+    }
+  }
+
+  async getProjects(){
+    const params = new HttpParams().set('customerId', this.selectedCustomer || '');
+    
+    try {
+
+      const projects = await this.apiservice.callGetApi<any>('projects', params).toPromise();
+      console.log({ projects });
+
+      this.projects = projects; // Store the projects array
+
+    if (projects.length > 0) {
+      this.selectedProject = projects[0]._id; // Select first project
+      this.getAreas(); // Fetch areas based on customer & project
+    } else {
+      this.selectedProject = null;
+    }
+
+    } catch (error) {
+      console.error('Error fetching areas:', error);
+    }
+    
+   /*  const resps = await this.apiservice.findOne('areas', this.selectedCustomer).toPromise();
+    console.log({resps}) */
+
+
   }
 
   applyFilter(event: Event) {
