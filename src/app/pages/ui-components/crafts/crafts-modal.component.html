@@ -21,21 +21,9 @@
       </mat-form-field>
 
       <mat-form-field appearance="fill">
-        <mat-label>Dimensions</mat-label>
-        <input matInput formControlName="Dimensions" />
-        <mat-error *ngIf="form.get('Dimensions')?.hasError('required')">Dimensions is required</mat-error>
-      </mat-form-field>
-
-      <mat-form-field appearance="fill">
-        <mat-label>Material Used</mat-label>
-        <input matInput formControlName="materialUsed" />
-        <mat-error *ngIf="form.get('materialUsed')?.hasError('required')">Material Used is required</mat-error>
-      </mat-form-field>
-
-      <mat-form-field appearance="fill">
-        <mat-label>Lead Time</mat-label>
-        <input matInput formControlName="leadTime" />
-        <mat-error *ngIf="form.get('leadTime')?.hasError('required')">Lead Time is required</mat-error>
+        <mat-label>Maximum Price</mat-label>
+        <input matInput type="number" formControlName="priceMax" />
+        <mat-error *ngIf="form.get('priceMax')?.hasError('required')">Maximum Price is required</mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="fill" class="full-width">

@@ -43,9 +43,7 @@ export class CraftsComponent implements OnInit, AfterViewInit {
     'name', 
     'area', 
     'price', 
-    'Dimensions', 
-    'materialUsed', 
-    'leadTime',
+    'priceMax',
     'description',
     'actions'
   ];
@@ -65,9 +63,7 @@ export class CraftsComponent implements OnInit, AfterViewInit {
       name: ['', Validators.required],
       area: ['', Validators.required],
       price: ['', Validators.required],
-      Dimensions: ['', Validators.required], //tamano de instalacion
-      materialUsed: ['', Validators.required],//materiales que se utilizaran
-      leadTime: ['', Validators.required], //duración del proyecto
+      priceMax: ['', Validators.required],
       description: ['', Validators.required],
     });
 
@@ -190,9 +186,7 @@ export class ModalFormComponent {
       name: [this.data.form.name || '', Validators.required],
       area: [this.data.form.area || '', Validators.required],
       price: [this.data.form.price || '', Validators.required],
-      Dimensions: [this.data.form.Dimensions || '', Validators.required],
-      materialUsed: [this.data.form.materialUsed || '', Validators.required],
-      leadTime: [this.data.form.leadTime || '', Validators.required],
+      priceMax: [this.data.form.priceMax || '', Validators.required],
       description: [this.data.form.description || '', Validators.required],
     });
   }
