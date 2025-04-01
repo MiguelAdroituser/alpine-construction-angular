@@ -1,5 +1,6 @@
 export interface AreaInterface {
     customerId: string; //Required
+    projectId: string; //Required
     room: number; // Required
     roomName: string; // Required
     craft: string; // Required

@@ -188,7 +188,7 @@ export class AreasComponent implements OnInit, AfterViewInit {
     /* 
     const resps = await this.apiservice.create('crafts/create', data).toPromise();
      */
-    const result = await this.apiservice.create('areas/create', {...area, customerId: this.selectedCustomer! }).toPromise();
+    const result = await this.apiservice.create('areas/create', {...area, customerId: this.selectedCustomer!, projectId: this.selectedProject! }).toPromise();
     console.log('create function', result)
 
     this.getAreas();
@@ -321,12 +321,15 @@ export class AreasComponent implements OnInit, AfterViewInit {
   styleUrls: ['./areas.component.scss']
 })
 export class ModalFormComponent implements OnInit{
+  private isInitializing = true;
+
   form: FormGroup;
   private bs!: Subscription | undefined;
   craftOptions: Craft[] = [];
   directions: string[] = ['North', 'East', 'South', 'West', 'Ceiling', 'Floor']; //Edicion Manuel
   disposalPercentage = 0.2; // 20%
   bidderPercentage = 0.05; // 5%
+  private checkboxSubscriptions: Map<string, Subscription> = new Map();
   unitMappings: { [key: string]: string } = {
     'LB': 'KG',
     'FT2': 'M2',
@@ -417,22 +420,33 @@ export class ModalFormComponent implements OnInit{
     this.listenToCheckboxChanges(); // Agregar función para actualizar el campo price
     // this.areaSubscription();
   }
-  ngOnInit(): void {
-    // throw new Error('Method not implemented.');
-    this.loadCraftOptions();
+  async ngOnInit(): Promise<void> {
+   
+    await this.loadCraftOptions();
+    
+    this.isInitializing = true; //
+
     this.craftIdSuscription();
     this.unidadUsaSubscription();
-    this.cantidadSubscription();
     this.areaSubscription();
+    this.cantidadSubscription();
 
     //Habilitar o deshabilitar checkboxes segun el campo area
     this.updateCheckboxes(null);
-    
+
+    this.isInitializing = false;
+    //TODO: SE CORRIGIO LO DEL PRICE, PERO LOS CHECKBOXS NO ESTAN
+    //SIENDO HABILITADOS O HABILIDADOS CORRECTAMENTEL.
   }
+
+  /* ngAfterViewInit(): void {
+    this.cantidadSubscription(); // Subscribe after Angular renders the form
+    // this.recalculateValues(); // Manually trigger recalculations for pre-filled data
+  } */
   
   areaSubscription() {
     this.form.get('area')?.valueChanges.subscribe(value => {
-
+      if (this.isInitializing) return;
       console.log('value suscription', value)
 
       if (!value) this.form.get('cantidad')?.disable();
@@ -447,13 +461,12 @@ export class ModalFormComponent implements OnInit{
         this.updateCheckboxes(null); // Deshabilita todos los checkboxes si no es una opción válida
       }
 
-      //this.recalculateValues(); // Recalculate after updating craft and area
       
     });
   }
 
   //Nuevo Manuel Checkboxes
-  updateCheckboxes(area: 'Flooring' | 'Walls' | 'Showers' | null) {
+  /* updateCheckboxes(area: 'Flooring' | 'Walls' | 'Showers' | null) {
     const checkboxes: Record<'Flooring' | 'Walls' | 'Showers', string[]> = {
       Flooring: ['checkbox_Straight', 'checkbox_45_Angle', 'checkbox_Brick', 'checkbox_Random', 'checkbox_Designs', 'checkbox_Medalions', 'checkbox_Heated_Floors'],
       Walls: ['checkbox_Straight', 'checkbox_45_Angle', 'checkbox_Brick', 'checkbox_Random', 'checkbox_Designs'],
@@ -475,9 +488,33 @@ export class ModalFormComponent implements OnInit{
     }
 
     // Trigger recalculation after updating checkboxes
-  this.recalculateValues();
   
+  } */
+
+  updateCheckboxes(area: 'Flooring' | 'Walls' | 'Showers' | null) {
+    const checkboxes: Record<'Flooring' | 'Walls' | 'Showers', string[]> = {
+      Flooring: ['checkbox_Straight', 'checkbox_45_Angle', 'checkbox_Brick', 'checkbox_Random', 'checkbox_Designs', 'checkbox_Medalions', 'checkbox_Heated_Floors'],
+      Walls: ['checkbox_Straight', 'checkbox_45_Angle', 'checkbox_Brick', 'checkbox_Random', 'checkbox_Designs'],
+      Showers: ['checkbox_Steam_Showers', 'checkbox_Shower_Pan', 'checkbox_Benches']
+    };
+  
+    // Get all checkbox fields
+    this.checkboxFields.forEach(field => {
+      // Check if the checkbox belongs to the selected area
+      const shouldEnable = area ? checkboxes[area]?.includes(field) : false;
+  
+      if (shouldEnable) {
+        this.form.get(field)?.enable();
+      } else {
+        this.form.get(field)?.disable();
+        this.form.get(field)?.setValue(false, { emitEvent: false }); // Ensure it's unchecked if disabled
+      }
+    });
+  
+    // Trigger recalculation after updating checkboxes
+    this.recalculateValues();
   }
+  
   
   // Función para desmarcar todos los checkboxes
   resetCheckboxes() {
@@ -502,7 +539,7 @@ export class ModalFormComponent implements OnInit{
   }
 
   
-  private listenToCheckboxChanges() {
+  /* private listenToCheckboxChanges() {
     this.checkboxFields.forEach(field => {
       this.form.get(field)?.valueChanges.subscribe((isChecked: boolean) => {
 
@@ -511,10 +548,6 @@ export class ModalFormComponent implements OnInit{
         if ( this.form.get('cantidad')?.value === '' ) return;
 
          const area = this.form.get('area')?.value;
-        /*if (!area || !this.prices[area]) {
-          this.form.patchValue({ price: 0 }, { emitEvent: false });
-          return;
-        } */
   
         // Get current price
         let currentPrice = this.form.get('price')?.value || 0;
@@ -527,53 +560,69 @@ export class ModalFormComponent implements OnInit{
         this.form.patchValue({ price: currentPrice }, { emitEvent: false });
       });
     });
-  }
+  } */
+
+    /* private listenToCheckboxChanges() {
+      this.checkboxFields.forEach(field => {
+        // Unsubscribe previous subscription (if any)
+        this.form.get(field)?.valueChanges.unsubscribe();
+    
+        this.form.get(field)?.valueChanges.subscribe((isChecked: boolean) => {
+          console.log('logs');
+    
+          // If cantidad is empty, do nothing
+          if (this.form.get('cantidad')?.value === '') return;
+    
+          const area = this.form.get('area')?.value;
+    
+          // Get current price
+          let currentPrice = this.form.get('price')?.value || 0;
+          let fieldPrice = this.prices[area]?.[field] || 0;
+    
+          // Add or subtract based on checkbox state
+          currentPrice = isChecked ? currentPrice + fieldPrice : currentPrice - fieldPrice;
+    
+          // Update the price
+          this.form.patchValue({ price: currentPrice }, { emitEvent: false });
+        });
+      });
+    } */
+
+      private listenToCheckboxChanges() {
+        this.checkboxFields.forEach(field => {
+          // Unsubscribe if a previous subscription exists
+          this.checkboxSubscriptions.get(field)?.unsubscribe();
+      
+          // Subscribe to valueChanges and store the subscription
+          const subscription = this.form.get(field)?.valueChanges.subscribe((isChecked: boolean) => {
+            console.log('logs');
+      
+            // If cantidad is empty, do nothing
+            if (this.form.get('cantidad')?.value === '') return;
+      
+            const area = this.form.get('area')?.value;
+            let currentPrice = this.form.get('price')?.value || 0;
+            let fieldPrice = this.prices[area]?.[field] || 0;
+      
+            // Add or subtract based on checkbox state
+            currentPrice = isChecked ? currentPrice + fieldPrice : currentPrice - fieldPrice;
+      
+            // Update the price
+            this.form.patchValue({ price: currentPrice }, { emitEvent: false });
+          });
+      
+          // Store the new subscription
+          if (subscription) {
+            this.checkboxSubscriptions.set(field, subscription);
+          }
+        });
+      }
+    
 
   cantidadSubscription(): void {
     this.form.get('cantidad')!.valueChanges.subscribe(value => {
-      /* const unidadUsa = this.form.get('unidadUsa')!.value;
-      const cantidadMx = this.convertToMxUnit(value, unidadUsa);
+      if (this.isInitializing) return;
 
-      // Get selected craft and area from the form
-      const selectedCraft = this.form.get('craft')!.value;
-      const selectedArea = this.form.get('area')!.value;
-
-      // Find the craft object in the craftOptions array
-      const craft = this.craftOptions.find(c => c.name === selectedCraft && c.area === selectedArea);
-
-      // Get the price ( craft price * cantidad )
-      let price = craft ? ( craft.price * value ) : 0;
-
-      // Check which checkboxes are selected and add their prices
-    if (selectedArea && this.prices[selectedArea]) {
-      this.checkboxFields.forEach(field => {
-        if (this.form.get(field)?.value) {  // If checkbox is selected
-          price += this.prices[selectedArea][field] || 0;
-        }
-      });
-    }
-      
-      // Get bidden ( cantidad * 20% )
-      const disposal = Math.round(value * this.disposalPercentage);
-
-      //Get total cantidad ( cantidad + disposal )
-      const totalCantidad = value + disposal;
-
-      //Get Bidder ( price * 0.05 )
-      const bidder = price * this.bidderPercentage;
-
-      // Calculate total ( price - bidder )
-      const total = price - bidder;
-
-      this.form.patchValue({
-        cantidadUsa: value,
-        cantidadMx: cantidadMx,
-        price: price, // Update the form's price field
-        disposal: disposal,
-        totalCantidad: totalCantidad,
-        bidden: bidder,
-        total: total  // Update the total field
-      }, { emitEvent: false }); // Prevent triggering valueChanges again */
       this.recalculateValues();
     });
 
@@ -597,6 +646,7 @@ export class ModalFormComponent implements OnInit{
     
     this.bs = this.form.get('craftId')?.valueChanges.subscribe(craftId => {
       console.log('craftId changes:', craftId);
+      if (this.isInitializing) return; // Avoid premature execution
   
       // Find the selected craft from craftOptions
       const selectedCraft = this.craftOptions.find(option => option._id === craftId);
@@ -610,16 +660,13 @@ export class ModalFormComponent implements OnInit{
           });
         }
 
-        // this.recalculateValues(); // Recalculate after updating craft and area
-      
-
-
     });
   }
 
   unidadUsaSubscription() {
     this.bs = this.form.get('unidadUsa')?.valueChanges.subscribe(unidadUsa => {
       console.log('unidadUsa changes:', unidadUsa);
+      if (this.isInitializing) return; 
   
       // Mapping of USA to MX units
       const unitMapping: { [key: string]: string } = {
@@ -641,6 +688,9 @@ export class ModalFormComponent implements OnInit{
   }
 
   recalculateValues() {
+
+    
+
     const value = this.form.get('cantidad')!.value;
     const unidadUsa = this.form.get('unidadUsa')!.value;
     const cantidadMx = this.convertToMxUnit(value, unidadUsa);
@@ -658,6 +708,12 @@ export class ModalFormComponent implements OnInit{
         }
       });
     }
+
+    console.log('recalculateValues', 'price: ', price)
+    console.log('craft', craft)
+    console.log('selectedCraft', selectedCraft)
+    console.log('selectedArea', selectedArea)
+    console.log('this.craftOptions', this.craftOptions)
   
     const disposal = Math.round(value * this.disposalPercentage);
     const totalCantidad = value + disposal;
@@ -679,6 +735,7 @@ export class ModalFormComponent implements OnInit{
   ngOnDestroy(): void {
     // Desuscribirse de todas las suscripciones para evitar pérdidas de memoria.
     this.bs?.unsubscribe();
+    this.checkboxSubscriptions.forEach(sub => sub.unsubscribe());
   }
 
   async loadCraftOptions() {
@@ -699,7 +756,10 @@ export class ModalFormComponent implements OnInit{
 
   onSubmit() {
     if (this.form.valid) {
-      this.dialogRef.close(this.form.value); // Cierra el modal y pasa los datos
+      // this.form.enable();
+      const formValue  = { ...this.form.value, unidadMx: this.form.get('unidadMx')?.value }
+
+      this.dialogRef.close( formValue ); // Cierra el modal y pasa los datos
     }
   }
 
