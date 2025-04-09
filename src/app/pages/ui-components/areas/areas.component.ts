@@ -417,6 +417,8 @@ export class ModalFormComponent implements OnInit{
       checkbox_Benches: [this.data.form.checkbox_Benches || false],
     });
 
+    console.log('this.form', this.form.value);
+
     this.listenToCheckboxChanges(); // Agregar función para actualizar el campo price
     // this.areaSubscription();
   }
@@ -432,11 +434,18 @@ export class ModalFormComponent implements OnInit{
     this.cantidadSubscription();
 
     //Habilitar o deshabilitar checkboxes segun el campo area
-    this.updateCheckboxes(null);
+    // this.updateCheckboxes(null);
+
+    const currentArea = this.form.get('area')?.value;
+    if (currentArea === 'Flooring' || currentArea === 'Walls' || currentArea === 'Showers') {
+      this.updateCheckboxes(currentArea);
+    } else {
+      this.updateCheckboxes(null);
+    }
 
     this.isInitializing = false;
-    //TODO: SE CORRIGIO LO DEL PRICE, PERO LOS CHECKBOXS NO ESTAN
-    //SIENDO HABILITADOS O HABILIDADOS CORRECTAMENTEL.
+    //TODO: SE CORRIGIERON LOS CHECKBOXES, NOMAS EL REVISAR EL
+    //BIDDER Y EL TOTAL. DIFIERE CUANDO ES NUEVO REGISTRO O EDITION.
   }
 
   /* ngAfterViewInit(): void {
@@ -492,6 +501,7 @@ export class ModalFormComponent implements OnInit{
   } */
 
   updateCheckboxes(area: 'Flooring' | 'Walls' | 'Showers' | null) {
+
     const checkboxes: Record<'Flooring' | 'Walls' | 'Showers', string[]> = {
       Flooring: ['checkbox_Straight', 'checkbox_45_Angle', 'checkbox_Brick', 'checkbox_Random', 'checkbox_Designs', 'checkbox_Medalions', 'checkbox_Heated_Floors'],
       Walls: ['checkbox_Straight', 'checkbox_45_Angle', 'checkbox_Brick', 'checkbox_Random', 'checkbox_Designs'],
