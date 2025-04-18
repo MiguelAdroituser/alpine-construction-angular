@@ -47,7 +47,7 @@ export class CustomersComponent implements OnInit, AfterViewInit {
     'emailAddress',
     'address',
     'registrationDate',
-    'projectName', 
+    // 'projectName',
     //'userId', 
     'actions'
   ];
@@ -71,7 +71,7 @@ export class CustomersComponent implements OnInit, AfterViewInit {
       address: ['', Validators.required],
       registrationDate: [{ value: new Date(), disabled: true }],
 
-      projectName: ['', Validators.required],
+      // projectName: ['', Validators.required],
       
     });
 
@@ -197,7 +197,7 @@ export class ModalFormComponent {
       emailAddress: [this.data.form.emailAddress || '', Validators.required],
       address: [this.data.form.address || '', Validators.required],
       registrationDate: [{ value: this.getLocalDate(), disabled: true }],    
-      projectName: [this.data.form.projectName || '', Validators.required],
+      // projectName: [this.data.form.projectName || '', Validators.required],
       //userId: [this.data.form.userId || '', Validators.required],
     });
   }
