@@ -41,24 +41,12 @@
         <td mat-cell *matCellDef="let element"> {{ element.price }} </td>
       </ng-container>
 
-      <!-- Columna: Dimensions -->
-      <ng-container matColumnDef="Dimensions">
-        <th mat-header-cell *matHeaderCellDef> Dimensions </th>
-        <td mat-cell *matCellDef="let element"> {{ element.Dimensions }} </td>
+      <!-- Columna: Maximum Price -->
+      <ng-container matColumnDef="priceMax">
+        <th mat-header-cell *matHeaderCellDef> Maximum Price </th>
+        <td mat-cell *matCellDef="let element"> {{ element.priceMax }} </td>
       </ng-container>
-      
-      <!-- Columna: materialUsed -->
-      <ng-container matColumnDef="materialUsed">
-        <th mat-header-cell *matHeaderCellDef> materialUsed </th>
-        <td mat-cell *matCellDef="let element"> {{ element.materialUsed }} </td>
-      </ng-container>
-      
-      <!-- Columna: leadTime -->
-      <ng-container matColumnDef="leadTime">
-        <th mat-header-cell *matHeaderCellDef> leadTime </th>
-        <td mat-cell *matCellDef="let element"> {{ element.leadTime }} </td>
-      </ng-container>
-      
+            
       <!-- Columna: description -->
       <ng-container matColumnDef="description">
         <th mat-header-cell *matHeaderCellDef> description </th>
