@@ -48,6 +48,7 @@ export class ProjectsComponent {
     displayedColumns: string[] = [
       'projectName', 
       'registrationDate', 
+      'location',
       'actions'
     ];
 
@@ -69,7 +70,7 @@ export class ProjectsComponent {
         this.form = this.fb.group({
           projectName: ['', Validators.required],
           registrationDate: [{ value: new Date(), disabled: true }],
-          
+          location: ['', Validators.required]
         });
     
         // this.getProjects();
@@ -238,7 +239,7 @@ export class ModalFormComponent implements OnInit{
       _id: [this.data.form._id || ''],
       projectName: [this.data.form.customerName || '', Validators.required],
       registrationDate: [{ value: this.getLocalDate(), disabled: true }],
-      
+      location: [this.data.form.location || '', Validators.required],
     });
 
   }

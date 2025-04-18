@@ -2,6 +2,7 @@ export interface Project {
     customerId: string; //Required
     userId: string; //Required
     projectName: string;
+    location: string;
     registrationDate: Date;
     _id?:string;
 }
