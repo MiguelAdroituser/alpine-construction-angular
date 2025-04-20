@@ -41,6 +41,11 @@
   
     <!-- Botón -->
     <mat-card-content class="button-container">
+      
+      <button class="m-r-4" mat-flat-button color="accent" matTooltip="Open budget settings" (click)="openBudget()">
+        Budget
+      </button>
+
       <button mat-flat-button color="primary" matTooltip="Add a new item" (click)="openModal({})">
         Add
       </button>

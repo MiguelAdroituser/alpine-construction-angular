@@ -79,7 +79,7 @@ export class AreasComponent implements OnInit, AfterViewInit {
   selectedProject: string | null = null;
 
   constructor( 
-    private apiservice: ApiService<AreaInterface>, 
+    private apiservice: ApiService<AreaInterface>, //TODO: agregar propiedades para la generacion del prespuesto
     private dialog: MatDialog,
     private fb: FormBuilder
    ) {
@@ -233,6 +233,45 @@ export class AreasComponent implements OnInit, AfterViewInit {
       // Fetch areas based on the selected customer and project
       this.getAreas();
     }
+  }
+
+  async openBudget() {
+
+    /* 
+      //TODO:
+      NOTA: 
+      que debe llevar el JSON para el budget:
+      * project name, location, (start date, end date) (projects).
+      * client name, company name, number, email, address (customer).
+      * Investigar como enviar los crafts y sus totales. [preguntar a joel]
+    */
+
+    const test = {
+      customerId: '', //Required
+      projectId: '', //Required
+      room: 1, // Required
+      roomName: '', // Required
+      craft: '', // Required
+      area: '', // Required
+      price: 1, //Required
+      direction: '', //Required
+      type: '', //Required
+      // SF: 1, //Required
+      cantidad: 1, // Es el SF
+      disposal: 1, //Required
+      totalCantidad: 1, //Required Es el TotalSQFt
+      bidden: 1, //Required
+      total: 1, //Required
+  
+      //Extra properties
+      unidadUsa: '',
+      unidadMx: '',
+      cantidadUsa: 1,
+      cantidadMx: 1,
+      _id:'',
+    }
+    const result = await this.apiservice.create('areas/budget-pdf', test).toPromise();
+    console.log('create function', result)
   }
 
   async getProjects(){
