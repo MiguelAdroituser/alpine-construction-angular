@@ -246,6 +246,27 @@ export class AreasComponent implements OnInit, AfterViewInit {
       * Investigar como enviar los crafts y sus totales. [preguntar a joel]
     */
 
+    console.log('this.customers', this.customers);
+    const customer = this.customers.find(c => c._id === this.selectedCustomer);
+    console.log('selected', customer);
+    
+    console.log('this.projects', this.projects);
+    const project = this.projects.find(c => c._id === this.selectedProject);
+    console.log('project selected', project);
+
+    const other = {
+      //customer data
+      customerName: customer?.customerName,
+      companyName: customer?.companyName,
+      number: customer?.phoneNumber,
+      email: customer?.emailAddress,
+      address: customer?.address,
+      //project data
+      projectName: project?.projectName,
+      location: project?.location,
+      
+    }
+
     const test = {
       customerId: '', //Required
       projectId: '', //Required
