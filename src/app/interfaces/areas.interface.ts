@@ -22,3 +22,17 @@ export interface AreaInterface {
     cantidadMx: number;
     _id?:string;
 }
+
+export interface BudgetDataInterface {
+    // customer data
+    customerName: string | undefined;
+    companyName: string | undefined;
+    number: string | undefined;
+    email: string | undefined;
+    address: string | undefined;
+    // project data
+    projectName: string | undefined;
+    location: string | undefined;
+    // crafts - areas
+    areas: AreaInterface[];
+  }

@@ -9,7 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { ApiService } from 'src/app/services/api.service';
-import { AreaInterface } from 'src/app/interfaces/areas.interface';
+import { AreaInterface, BudgetDataInterface } from 'src/app/interfaces/areas.interface';
 import { MatDialog, MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -79,7 +79,7 @@ export class AreasComponent implements OnInit, AfterViewInit {
   selectedProject: string | null = null;
 
   constructor( 
-    private apiservice: ApiService<AreaInterface>, //TODO: agregar propiedades para la generacion del prespuesto
+    private apiservice: ApiService<AreaInterface | BudgetDataInterface>, //TODO: agregar propiedades para la generacion del prespuesto
     private dialog: MatDialog,
     private fb: FormBuilder
    ) {
@@ -246,15 +246,17 @@ export class AreasComponent implements OnInit, AfterViewInit {
       * Investigar como enviar los crafts y sus totales. [preguntar a joel]
     */
 
-    console.log('this.customers', this.customers);
+    // console.log('this.customers', this.customers);
     const customer = this.customers.find(c => c._id === this.selectedCustomer);
-    console.log('selected', customer);
+    // console.log('selected', customer);
     
-    console.log('this.projects', this.projects);
+    // console.log('this.projects', this.projects);
     const project = this.projects.find(c => c._id === this.selectedProject);
-    console.log('project selected', project);
+    // console.log('project selected', project);
 
-    const other = {
+    // console.log('info of crafts', this.dataSource.data)
+
+    const budgetData: BudgetDataInterface = {
       //customer data
       customerName: customer?.customerName,
       companyName: customer?.companyName,
@@ -264,34 +266,12 @@ export class AreasComponent implements OnInit, AfterViewInit {
       //project data
       projectName: project?.projectName,
       location: project?.location,
-      
+      //Crafts - Areas
+      areas: this.dataSource.data
     }
 
-    const test = {
-      customerId: '', //Required
-      projectId: '', //Required
-      room: 1, // Required
-      roomName: '', // Required
-      craft: '', // Required
-      area: '', // Required
-      price: 1, //Required
-      direction: '', //Required
-      type: '', //Required
-      // SF: 1, //Required
-      cantidad: 1, // Es el SF
-      disposal: 1, //Required
-      totalCantidad: 1, //Required Es el TotalSQFt
-      bidden: 1, //Required
-      total: 1, //Required
-  
-      //Extra properties
-      unidadUsa: '',
-      unidadMx: '',
-      cantidadUsa: 1,
-      cantidadMx: 1,
-      _id:'',
-    }
-    const result = await this.apiservice.create('areas/budget-pdf', test).toPromise();
+    
+    const result = await this.apiservice.create('areas/budget-pdf', budgetData).toPromise();
     console.log('create function', result)
   }
 
