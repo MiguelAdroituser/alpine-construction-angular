@@ -658,7 +658,17 @@ export class ModalFormComponent implements OnInit{
             currentPrice = isChecked ? currentPrice + fieldPrice : currentPrice - fieldPrice;
       
             // Update the price
-            this.form.patchValue({ price: currentPrice }, { emitEvent: false });
+            // if price changes, it should change the bidder and total, 
+            const bidder = parseFloat((currentPrice * this.bidderPercentage).toFixed(2));
+            const total = parseFloat((currentPrice - bidder).toFixed(2));
+            // Bidder = price * 0.05
+            // Total = price - bidder
+
+            this.form.patchValue({ 
+              price: currentPrice,
+              bidden: bidder,
+              total: total
+            }, { emitEvent: false });
           });
       
           // Store the new subscription
