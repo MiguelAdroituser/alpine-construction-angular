@@ -60,6 +60,9 @@ export class AppSideLoginComponent {
   } */
 
   async submit() {
+    
+    console.log('submit?');
+
     this.submitted = true;
 
     if ( this.form.valid ) {

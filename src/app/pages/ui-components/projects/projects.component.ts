@@ -88,7 +88,7 @@ export class ProjectsComponent {
         this.dataSource.paginator = this.paginator; // Vincula el paginador al DataSource
       }
 
-      async getCustomers(){
+      /* async getCustomers(){
     
         try {
           const customers = await this.apiservice.findAll('customers').toPromise();
@@ -103,7 +103,30 @@ export class ProjectsComponent {
           console.error('Error fetching customers:', error);
         }
     
+      } */
+
+      async getCustomers() {
+        try {
+          const customers = await this.apiservice.findAll('customers').toPromise();
+          console.log({ customers });
+      
+          if (!customers || customers.length === 0) {
+            console.warn('No customers found.');
+            this.customers = [];
+            this.selectedCustomer = null;
+            this.PRODUCT_DATA = [];
+            this.dataSource.data = [];
+            return;
+          }
+      
+          this.customers = customers;
+          this.selectedCustomer = customers[1]?._id ?? customers[0]._id; // safer fallback
+          this.onCustomerChange(this.selectedCustomer);
+        } catch (error) {
+          console.error('Error fetching customers:', error);
+        }
       }
+        
 
       onCustomerChange(customerId: string | null) {
         console.log('Selected Customer ID:', customerId);
@@ -118,29 +141,50 @@ export class ProjectsComponent {
         }
       }
 
-      async getProjects(){
-          const params = new HttpParams().set('customerId', this.selectedCustomer || '');
-          
-          try {
-      
-            const projects = await this.apiservice.callGetApi<any>('projects', params).toPromise();
-            console.log({ projects });
-            this.PRODUCT_DATA = [...projects]; // Ensure immutability
-            this.dataSource.data = this.PRODUCT_DATA;
-         
-            // Reassign paginator and sort to reflect updates correctly
-            this.dataSource.paginator = this.paginator;
-            this.dataSource.sort = this.sort;
-      
-          } catch (error) {
-            console.error('Error fetching areas:', error);
-          }
-          
-         /*  const resps = await this.apiservice.findOne('areas', this.selectedCustomer).toPromise();
-          console.log({resps}) */
-      
-      
+    /* async getProjects(){
+        const params = new HttpParams().set('customerId', this.selectedCustomer || '');
+        
+        try {
+    
+          const projects = await this.apiservice.callGetApi<any>('projects', params).toPromise();
+          console.log({ projects });
+          this.PRODUCT_DATA = [...projects]; // Ensure immutability
+          this.dataSource.data = this.PRODUCT_DATA;
+        
+          // Reassign paginator and sort to reflect updates correctly
+          this.dataSource.paginator = this.paginator;
+          this.dataSource.sort = this.sort;
+    
+        } catch (error) {
+          console.error('Error fetching areas:', error);
         }
+    
+      } */
+
+      async getProjects() {
+        const params = new HttpParams().set('customerId', this.selectedCustomer || '');
+      
+        try {
+          const projects = await this.apiservice.callGetApi<any>('projects', params).toPromise();
+          console.log({ projects });
+      
+          if (!projects || projects.length === 0) {
+            console.warn('No projects found for this customer.');
+            this.PRODUCT_DATA = [];
+            this.dataSource.data = [];
+            return;
+          }
+      
+          this.PRODUCT_DATA = [...projects];
+          this.dataSource.data = this.PRODUCT_DATA;
+      
+          this.dataSource.paginator = this.paginator;
+          this.dataSource.sort = this.sort;
+        } catch (error) {
+          console.error('Error fetching projects:', error);
+        }
+      }
+        
 
       applyFilter(event: Event) {
         const filterValue = (event.target as HTMLInputElement).value;
