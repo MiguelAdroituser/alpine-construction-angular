@@ -2,7 +2,9 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment.prod';
+import { CookieService } from 'ngx-cookie-service';
 import * as CryptoJS from 'crypto-js'; // Importa la librería CryptoJS
+
 // import { environment } from '../../../environments/environment';
 
 @Injectable({
@@ -14,8 +16,12 @@ export class AuthService {
   // private apiUrl = 'https://base-api-divine-morning-3669.fly.dev/auth/login'; // Reemplaza con la URL real de tu API
   // private apiUrl = 'http://localhost:3000/auth/login'; // Reemplaza con la URL real de tu API
   private apiUrl = `${ environment.apiUrl }auth/login`; // Reemplaza con la URL real de tu API
+  private secretKey = environment.secretKey;
 
-  constructor(private http: HttpClient) { 
+  constructor(
+    private http: HttpClient,
+    private cookieService: CookieService,
+  ) { 
     // console.log('constructor authService')
   }
 

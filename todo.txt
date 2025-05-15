@@ -1,7 +1,7 @@
-se intenta crear un area donde ya se toma 
-el customer Id (que hace referencia al cliente y al proyecto)
+2.- Crear el interceptor para agregar el token en los headers
 
-en el backend arroja error porque faltan algunas
-propiedades, y otras que si se envian,
-probablemente esten escritas diferentes.
+3.- Adaptar los Guards, para proteger login y rutas.
+
+
+Revisar app.config.ts
 
