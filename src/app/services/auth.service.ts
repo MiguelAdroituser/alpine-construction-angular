@@ -45,6 +45,10 @@ export class AuthService {
     return this.token;
   }
 
+  isLoggedIn(): boolean {
+    const decryptedToken = this.getDecryptedToken();
+    return decryptedToken !== null && decryptedToken !== undefined && decryptedToken !== '';
+  }
   /* isUserAdmin(): boolean {
     return this.isAdmin;
   } */

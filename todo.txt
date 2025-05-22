@@ -5,3 +5,9 @@
 
 Revisar app.config.ts
 
+
+Guards están en proceso, los agregamos pero no funciona el login. Listo!
+
+Agregar el cierre de sesión.
+
+
