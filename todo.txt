@@ -8,6 +8,14 @@ Revisar app.config.ts
 
 Guards están en proceso, los agregamos pero no funciona el login. Listo!
 
-Agregar el cierre de sesión.
+Agregar el cierre de sesión. Listo!
+
+
+new todo:
+
+1.-cambiar el logo del login, y del sidebar.
+2.-limpiar el dashboard, dejar solo las opciones necesarias.
+
+3.- revisar lo que falta del backend para generar el pdf.
 
 

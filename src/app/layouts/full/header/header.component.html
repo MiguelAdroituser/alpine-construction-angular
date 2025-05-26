@@ -49,7 +49,7 @@
     />
   </button>
   <mat-menu #profilemenu="matMenu" class="topbar-dd cardWithShadow">
-    <button mat-menu-item>
+    <!-- <button mat-menu-item>
       <mat-icon class="d-flex align-items-center"
         ><i
           data-icon="solar:shield-user-line-duotone"
@@ -72,16 +72,16 @@
           class="iconify icon-22"
         ></i> </mat-icon
       >My Task
-    </button>
+    </button> -->
 
     <div class="p-x-12 m-t-12">
       <a
-        [routerLink]="['/authentication/login']"
+        (click)="logOut()"
         mat-stroked-button
         color="primary"
         class="w-100"
         >Logout</a
-      >
+      > <!-- [routerLink]="['/authentication/login']" -->
     </div>
   </mat-menu>
 </mat-toolbar>

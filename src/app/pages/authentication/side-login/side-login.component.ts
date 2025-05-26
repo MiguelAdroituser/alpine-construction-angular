@@ -70,7 +70,6 @@ export class AppSideLoginComponent {
 
       this.authService.login(email, password).subscribe(
         token => {
-          // console.log('Logged in with token:', token);
           
           this.router.navigate(['/ui-components/crafts'])
         },

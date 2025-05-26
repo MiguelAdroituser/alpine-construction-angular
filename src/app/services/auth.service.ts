@@ -34,11 +34,44 @@ export class AuthService {
       .pipe(
         map(response => {
         //   this.isAdmin = response.isAdmin;
+        console.log('login response', response);
           this.token = response.accessToken;
+
+          //OBTENEMOS EL TOKEN
+          const token = response.accessToken;
+
+          const tokenCrm = response.accessToken
+          //ENCRYPTAMOS EL TOKEN PARA GUARDARLO EN LA COOKIE
+          const encryptedToken = this.encryptToken(token);
+          const encryptedTokenCrm = this.encryptToken(tokenCrm)
+
+          // Guardar el resto de los datos en otra cookie (puedes ajustar las propiedades según tus necesidades)
+          const userMetadata = {
+            ttl: 604800,
+            isAdmin: response.isAdmin,
+            userName: response.username
+          };
+
+          console.log({userMetadata})
+
+          const currentDate = new Date();
+          const futureDate = new Date(currentDate.getTime() + Number(userMetadata.ttl)*1000);
+
+          //ENCRYPTAMOS LA METADATA DEL USUARIO
+          const encryptedUserMetadata = this.encryptUserMetadata(userMetadata);
+          this.cookieService.set('userMetadata', encryptedUserMetadata, { path: '/', expires: futureDate });
+          // Guardar el token en la cookie existente
+          this.cookieService.set('authToken', encryptedToken, { path: '/', expires: futureDate });
+          this.cookieService.set('authTokenCrm', encryptedTokenCrm, { path: '/', expires: futureDate });
+
           // return this.token;
           return response;
         })
       );
+  }
+
+  encryptToken(token: string): string {
+    return CryptoJS.AES.encrypt(token, this.secretKey).toString();
   }
 
   getToken(): string | null {
@@ -77,8 +110,29 @@ export class AuthService {
   }
   
 
-  logout(): void {
+  async logout(): Promise<void> {
     this.token = null;
+
+    // Elimina las cookies relacionadas con la autenticación
+    this.cookieService.delete('authToken', '/');
+    this.cookieService.delete('userMetadata', '/');
+    this.cookieService.delete('authTokenCrm', '/');
+
+    // this.cookieService.delete('branch', '/');
+
+    // Verifica que las cookies han sido eliminadas
+    const authToken = this.cookieService.get('authToken');
+    const userMetadata = this.cookieService.get('userMetadata');
+    const authTokenCrm = this.cookieService.get('authTokenCrm');
+    // const branch = this.cookieService.get('branch');
+
+    // if (authToken || userMetadata || authTokenCrm || branch) {
+    if (authToken || userMetadata || authTokenCrm) { //|| branch
+        return Promise.reject(new Error('Failed to delete cookies'));
+    }
+
+    // Puedes realizar cualquier otra limpieza necesaria, como redirigir al usuario, etc.
+    return Promise.resolve(); // Se completa inmediatamente, ya que las operaciones anteriores son sincrónicas
   }
 
 }
