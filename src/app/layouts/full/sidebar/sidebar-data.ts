@@ -1,16 +1,16 @@
 import { NavItem } from './nav-item/nav-item';
 
 export const navItems: NavItem[] = [
-  {
+  /* {
     navCap: 'Home',
   },
   {
     displayName: 'Dashboard',
     iconName: 'solar:widget-add-line-duotone',
     route: '/dashboard',
-  },
+  }, */
   {
-    navCap: 'Ui Components',
+    navCap: 'Components',
     divider: true
   },
   {
@@ -21,23 +21,23 @@ export const navItems: NavItem[] = [
   },
   {
     displayName: 'Areas',
-    iconName: 'solar:tablet-line-duotone',
+    iconName: 'solar:card-line-duotone',
     //New Catalog
     route: '/ui-components/areas',
   },
   {
     displayName: 'Customers',
-    iconName: 'solar:tablet-line-duotone',
+    iconName: 'solar:wallet-2-line-duotone',
     //New Catalog
     route: '/ui-components/customers',
   },
   {
     displayName: 'Projects',
-    iconName: 'solar:tablet-line-duotone',
+    iconName: 'solar:waterdrops-line-duotone',
     //New Catalog
     route: '/ui-components/projects',
   },
-  {
+  /* {
     navCap: 'Auth',
     divider: true
   },
@@ -50,5 +50,5 @@ export const navItems: NavItem[] = [
     displayName: 'Register',
     iconName: 'solar:user-plus-rounded-line-duotone',
     route: '/authentication/register',
-  },
+  }, */
 ];
