@@ -20,7 +20,7 @@ export const navItems: NavItem[] = [
     route: '/ui-components/crafts',
   },
   {
-    displayName: 'Areas',
+    displayName: 'Bid Submit', //Areas
     iconName: 'solar:card-line-duotone',
     //New Catalog
     route: '/ui-components/areas',
