@@ -69,7 +69,8 @@ export class AreasComponent implements OnInit, AfterViewInit {
 
   dataSource = new MatTableDataSource<AreaInterface>(this.PRODUCT_DATA);
 
-  form: FormGroup;
+  form: FormGroup; // Este es el formulario para manejar areas
+  
 
   /* Customers config selector */
   customers: Customer[] = [];
@@ -84,6 +85,7 @@ export class AreasComponent implements OnInit, AfterViewInit {
     private fb: FormBuilder
   ) {
 
+    //Form - Areas
     this.form = this.fb.group({
       room: ['', Validators.required],
       roomName: ['', Validators.required],
@@ -118,6 +120,24 @@ export class AreasComponent implements OnInit, AfterViewInit {
       checkbox_Benches: [false],
     });
 
+    //Form - Materials
+    this.materialsForm = this.fb.group({
+      item: ['', Validators.required],
+      itemNumber: ['', Validators.required],
+      manufacturer: ['', Validators.required],
+      contactName: ['', Validators.required],
+      contactEmail: ['', Validators.required],
+      style: ['', Validators.required],
+      size: ['', Validators.required],
+      color: ['', Validators.required],
+      finishRemarks: ['', Validators.required],
+      grout: ['', Validators.required],
+      groutColor: ['', Validators.required],
+      cantidad: ['', Validators.required],
+      layout: ['', Validators.required],
+
+    });
+
     // this.getAreas();
     this.getCustomers();
     // this.getCrafts();
@@ -133,6 +153,9 @@ export class AreasComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     this.dataSource.paginator = this.paginator; // Vincula el paginador al DataSource
   }
+
+
+  /* SECCIÓN PARA AREAS - FUNCIONES ETC. */
 
   async getAreas() {
     const params = new HttpParams()
@@ -159,13 +182,6 @@ export class AreasComponent implements OnInit, AfterViewInit {
 
 
   }
-
-  /* async getCrafts(){
-    
-    const crafts = await this.apiservice.findAll('crafts').toPromise();
-    console.log({crafts})
-
-  } */
 
   async getCustomers() {
 
@@ -301,8 +317,6 @@ export class AreasComponent implements OnInit, AfterViewInit {
     }
   }
 
-  /*Logica del form y modal*/
-
   openModal(element: any) {
     const dialogRef = this.dialog.open(ModalFormComponent, {
       width: '400px',
@@ -326,12 +340,19 @@ export class AreasComponent implements OnInit, AfterViewInit {
       }
     });
   }
+  /* FIN DE SECCIÓN PARA AREAS - FUNCIONES ETC. */
 
-  /*Fin form y modal*/
+  /* SECCIÓN PARA MATERIALS - FUNCIONES ETC. */
+  materialsForm: FormGroup; // Este es el formulario para manejar materials
+
+  /* FIN DE SECCIÓN PARA MATERIALS - FUNCIONES ETC. */
+
 }
 
 
-
+/****************************************************** 
+Este Modal es el de AREAS
+******************************************************/
 @Component({
   selector: 'app-areas-modal',
   standalone: true,
@@ -447,11 +468,10 @@ export class ModalFormComponent implements OnInit {
       checkbox_Benches: [this.data.form.checkbox_Benches || false],
     });
 
-    // console.log('this.form', this.form.value);
-
     this.listenToCheckboxChanges(); // Agregar función para actualizar el campo price
-    // this.areaSubscription();
+
   }
+
   async ngOnInit(): Promise<void> {
 
     await this.loadCraftOptions();
@@ -480,11 +500,9 @@ export class ModalFormComponent implements OnInit {
   areaSubscription() {
     this.form.get('area')?.valueChanges.subscribe(value => {
       if (this.isInitializing) return;
-      // console.log('value suscription', value)
 
       if (!value) this.form.get('cantidad')?.disable();
       else this.form.get('cantidad')?.enable();
-
 
       this.resetCheckboxes();
 
@@ -493,7 +511,6 @@ export class ModalFormComponent implements OnInit {
       } else {
         this.updateCheckboxes(null); // Deshabilita todos los checkboxes si no es una opción válida
       }
-
 
     });
   }
@@ -587,7 +604,6 @@ export class ModalFormComponent implements OnInit {
     });
   }
 
-
   cantidadSubscription(): void {
     this.form.get('cantidad')!.valueChanges.subscribe(value => {
       if (this.isInitializing) return;
@@ -595,7 +611,6 @@ export class ModalFormComponent implements OnInit {
       this.recalculateValues();
     });
 
-    // this.listenToCheckboxChanges();
   }
 
   convertToMxUnit(value: number, unidadUsa: string): number {
@@ -614,7 +629,7 @@ export class ModalFormComponent implements OnInit {
   craftIdSuscription() {
 
     this.bs = this.form.get('craftId')?.valueChanges.subscribe(craftId => {
-      // console.log('craftId changes:', craftId);
+      
       if (this.isInitializing) return; // Avoid premature execution
 
       // Find the selected craft from craftOptions
@@ -676,12 +691,6 @@ export class ModalFormComponent implements OnInit {
       });
     }
 
-    /* console.log('recalculateValues', 'price: ', price)
-    console.log('craft', craft)
-    console.log('selectedCraft', selectedCraft)
-    console.log('selectedArea', selectedArea)
-    console.log('this.craftOptions', this.craftOptions) */
-
     const disposal = Math.round(value * this.disposalPercentage);
     const totalCantidad = value + disposal;
     const bidder = price * this.bidderPercentage;
@@ -697,7 +706,6 @@ export class ModalFormComponent implements OnInit {
       total: total
     }, { emitEvent: false }); // Prevents infinite loops
   }
-
 
   ngOnDestroy(): void {
     // Desuscribirse de todas las suscripciones para evitar pérdidas de memoria.
@@ -734,3 +742,75 @@ export class ModalFormComponent implements OnInit {
     this.dialogRef.close(); // Cierra el modal sin enviar datos
   }
 }
+/****************************************************** 
+Fin de Modal es el de AREAS
+******************************************************/
+
+
+
+/****************************************************** 
+Este Modal es el de MATERIALS
+******************************************************/
+@Component({
+  selector: 'app-materials-modal',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatGridListModule,
+    MatSelectModule,
+    MatOptionModule,
+    MatCheckboxModule, //NuevoManuel CheckBoxes
+  ],
+  templateUrl: './materials-modal.component.html',
+  styleUrls: ['./materials.component.scss']
+})
+export class ModalFormMaterialsComponent implements OnInit {
+
+  materialsForm: FormGroup;
+
+  constructor(
+    private fb: FormBuilder,
+    private dialogRef: MatDialogRef<ModalFormMaterialsComponent>,
+    private apiservice: ApiService<any>,
+    @Inject(MAT_DIALOG_DATA) public data: any // Inject the data passed to the modal
+  ) {
+
+    this.materialsForm = this.fb.group({
+      _id: [this.data.form._id || ''],
+      item: [this.data.form.item || '', Validators.required],
+      itemNumber: [this.data.form.itemNumber || '', Validators.required],
+      manufacturer: [this.data.form.manufacturer || '', Validators.required],
+      contactName: [this.data.form.contactName || '', Validators.required],
+      contactEmail: [this.data.form.contactEmail || '', Validators.required],
+      style: [this.data.form.style || '', Validators.required],
+      size: [this.data.form.size || 'North', Validators.required],
+      color: [this.data.form.color || 'N/A', Validators.required],
+      finishRemarks: [this.data.form.finishRemarks || '', Validators.required],
+      grout: [this.data.form.grout || '', Validators.required],
+      groutColor: [this.data.form.groutColor || '', Validators.required],
+      cantidad: [this.data.form.cantidad || '', Validators.required],
+      layout: [this.data.form.layout || '', Validators.required],
+
+    });
+
+  }
+
+  async ngOnInit(): Promise<void> {
+
+  }
+
+  onSubmit() {}
+
+  onClose() {
+    this.dialogRef.close(); // Cierra el modal sin enviar datos
+  }
+
+}
+/****************************************************** 
+Fin de Modal es el de MATERIALS
+******************************************************/

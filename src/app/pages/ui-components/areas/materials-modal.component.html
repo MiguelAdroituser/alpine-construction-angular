@@ -1,0 +1,138 @@
+<h2 mat-dialog-title>Materials</h2>
+<mat-dialog-content>
+  <form [formGroup]="materialsForm">
+    <div class="form-grid">
+
+      <mat-form-field appearance="fill">
+        <mat-label>Item</mat-label>
+        <input matInput formControlName="item" />
+        <mat-error *ngIf="materialsForm.get('item')?.hasError('required')">Item is required</mat-error>
+      </mat-form-field>
+      
+      <mat-form-field appearance="fill">
+        <mat-label>Item Number</mat-label>
+        <input matInput formControlName="itemNumber" />
+        <mat-error *ngIf="materialsForm.get('itemNumber')?.hasError('required')">Item Number is required</mat-error>
+      </mat-form-field>
+      
+      <mat-form-field appearance="fill">
+        <mat-label>Manufacturer</mat-label>
+        <input matInput formControlName="manufacturer" />
+        <mat-error *ngIf="materialsForm.get('manufacturer')?.hasError('required')">manufacturer is required</mat-error>
+      </mat-form-field>
+      
+      <mat-form-field appearance="fill">
+        <mat-label>Contact Name</mat-label>
+        <input matInput formControlName="contactName" />
+        <mat-error *ngIf="materialsForm.get('contactName')?.hasError('required')">Contact Name is required</mat-error>
+      </mat-form-field>
+      
+      <mat-form-field appearance="fill">
+        <mat-label>Contact Email</mat-label>
+        <input matInput formControlName="contactEmail" />
+        <mat-error *ngIf="materialsForm.get('contactEmail')?.hasError('required')">Contact Email is required</mat-error>
+      </mat-form-field>
+      
+      <mat-form-field appearance="fill">
+        <mat-label>Style</mat-label>
+        <input matInput formControlName="style" />
+        <mat-error *ngIf="materialsForm.get('style')?.hasError('required')">Style is required</mat-error>
+      </mat-form-field>
+      
+      <mat-form-field appearance="fill">
+        <mat-label>Size</mat-label>
+        <input matInput formControlName="size" />
+        <mat-error *ngIf="materialsForm.get('size')?.hasError('required')">Size is required</mat-error>
+      </mat-form-field>
+      
+      <mat-form-field appearance="fill">
+        <mat-label>Color</mat-label>
+        <input matInput formControlName="color" />
+        <mat-error *ngIf="materialsForm.get('color')?.hasError('required')">Color is required</mat-error>
+      </mat-form-field>
+      
+      <mat-form-field appearance="fill">
+        <mat-label>Finish Remarks</mat-label>
+        <input matInput formControlName="finishRemarks" />
+        <mat-error *ngIf="materialsForm.get('finishRemarks')?.hasError('required')">Finish Remarks is required</mat-error>
+      </mat-form-field>
+      
+      <mat-form-field appearance="fill">
+        <mat-label>Grout</mat-label>
+        <input matInput formControlName="grout" />
+        <mat-error *ngIf="materialsForm.get('grout')?.hasError('required')">Grout is required</mat-error>
+      </mat-form-field>
+      
+      <mat-form-field appearance="fill">
+        <mat-label>Grout Color</mat-label>
+        <input matInput formControlName="groutColor" />
+        <mat-error *ngIf="materialsForm.get('groutColor')?.hasError('required')">Grout Color is required</mat-error>
+      </mat-form-field>
+      
+      <mat-form-field appearance="fill">
+        <mat-label>Cantidad</mat-label>
+        <input matInput formControlName="cantidad" />
+        <mat-error *ngIf="materialsForm.get('cantidad')?.hasError('required')">Cantidad is required</mat-error>
+      </mat-form-field>
+      
+      <mat-form-field appearance="fill">
+        <mat-label>Layout</mat-label>
+        <input matInput formControlName="layout" />
+        <mat-error *ngIf="materialsForm.get('layout')?.hasError('required')">Layout is required</mat-error>
+      </mat-form-field>
+
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onClose()">Cancel</button>
+  <button mat-flat-button color="primary" (click)="onSubmit()" [disabled]="materialsForm.invalid">
+    Submit
+  </button>
+</mat-dialog-actions>
+
+
+<!-- 
+
+@Prop({ required: true })
+  item: string;
+
+  @Prop({ required: true })
+  itemNumber: string;
+
+  @Prop({ required: true })
+  manufacturer: string;
+
+  @Prop({ required: true })
+  contactName: string;
+
+  @Prop({ required: true })
+  contactEmail: string;
+
+  @Prop({ required: true })
+  style: string;
+
+  @Prop({ required: true })
+  size: string;
+
+  @Prop({ required: true })
+  color: string;
+
+  @Prop({ required: true })
+  finishRemarks: string;
+
+  @Prop({ required: true })
+  grout: string;
+
+  @Prop({ required: true })
+  groutColor: string;
+
+  @Prop({ required: true, type: Number })
+  cantidad: number;
+
+  @Prop({ required: true })
+  layout: string;
+
+-->
+
