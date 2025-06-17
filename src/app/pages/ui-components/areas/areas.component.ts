@@ -27,6 +27,7 @@ import { Subscription } from 'rxjs';
 //Nuevo Manuel
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { Project } from 'src/app/interfaces/projects.interface';
+import { MaterialsInterface } from 'src/app/interfaces/materials.interface';
 
 @Component({
   selector: 'app-areas',
@@ -343,8 +344,55 @@ export class AreasComponent implements OnInit, AfterViewInit {
   /* FIN DE SECCIÓN PARA AREAS - FUNCIONES ETC. */
 
   /* SECCIÓN PARA MATERIALS - FUNCIONES ETC. */
+  @ViewChild(MatPaginator) materialPaginator!: MatPaginator;
+  @ViewChild(MatSort) materialSort!: MatSort;
+
+  MATERIAL_DATA: MaterialsInterface[] = [];
+  
+  displayedMaterialColumns: string[] = [
+    'item',
+    'itemNumber',
+    'manufacturer',
+    'contactName',
+    'contactEmail',
+    'style',
+    'size',
+    'color',
+    'finishRemarks',
+    'grout',
+    'groutColor',
+    'cantidad',
+    'layout',
+  ];
+
+  materialDataSource = new MatTableDataSource<MaterialsInterface>(this.MATERIAL_DATA);
+  
   materialsForm: FormGroup; // Este es el formulario para manejar materials
 
+  openMaterialModal(element: any) {
+    const dialogRef = this.dialog.open(ModalFormMaterialsComponent, {
+      width: '400px',
+      data: { form: element },
+      // data: { form: this.form },
+    });
+
+    dialogRef.afterClosed().subscribe((result: any) => {
+      if (result) {
+        // console.log('Form Data:', result); // Aquí manejas los datos enviados desde el formulario
+
+        /* if (result._id === '') {
+          this.createAreas(result);
+          return;
+        }
+
+        this.updateArea(result); */
+
+      } else {
+        console.log('Modal closed without data');
+      }
+    });
+
+  }
   /* FIN DE SECCIÓN PARA MATERIALS - FUNCIONES ETC. */
 
 }
