@@ -12,4 +12,5 @@ export interface MaterialsInterface {
   groutColor: string;
   cantidad: number;
   layout: string;
+  _id?:string;
 }

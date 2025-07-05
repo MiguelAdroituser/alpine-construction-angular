@@ -81,7 +81,7 @@ export class AreasComponent implements OnInit, AfterViewInit {
   selectedProject: string | null = null;
 
   constructor(
-    private apiservice: ApiService<AreaInterface | BudgetDataInterface>, //TODO: agregar propiedades para la generacion del prespuesto
+    private apiservice: ApiService<AreaInterface | BudgetDataInterface | MaterialsInterface>, //TODO: agregar propiedades para la generacion del prespuesto
     private dialog: MatDialog,
     private fb: FormBuilder
   ) {
@@ -146,13 +146,21 @@ export class AreasComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    // Configura la fuente de datos
+    // Configura la fuente de datos (AREAS)
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
+
+    // Configuración para MATERIALS
+    this.materialDataSource.paginator = this.materialPaginator;
+    this.materialDataSource.sort = this.materialSort;
   }
 
   ngAfterViewInit(): void {
+    // Paginator Areas
     this.dataSource.paginator = this.paginator; // Vincula el paginador al DataSource
+
+    // Paginator Materials
+    this.materialDataSource.paginator = this.materialPaginator;
   }
 
 
@@ -182,6 +190,27 @@ export class AreasComponent implements OnInit, AfterViewInit {
      console.log({resps}) */
 
 
+  }
+
+  async getMaterials(){
+    const params = new HttpParams()
+      .set('customerId', this.selectedCustomer || '')
+      .set('projectId', this.selectedProject || '');
+
+    try {
+      const resps = await this.apiservice.callGetApi<any>('materials', params).toPromise();
+      
+      console.log('these are materials from BD:', resps);
+
+      this.MATERIAL_DATA = [ ...resps ];
+      this.materialDataSource.data = this.MATERIAL_DATA;
+
+      this.materialDataSource.paginator = this.materialPaginator;
+      this.materialDataSource.sort = this.materialSort;
+
+    } catch (error) {
+      console.error('Error fetching areas:', error);
+    }
   }
 
   async getCustomers() {
@@ -243,6 +272,9 @@ export class AreasComponent implements OnInit, AfterViewInit {
 
       // Fetch areas based on the selected customer and project
       this.getAreas();
+
+      //TEST get materials
+      this.getMaterials();
     }
   }
 
@@ -299,6 +331,9 @@ export class AreasComponent implements OnInit, AfterViewInit {
       if (projects.length > 0) {
         this.selectedProject = projects[0]._id; // Select first project
         this.getAreas(); // Fetch areas based on customer & project
+
+        //TEST get Materials
+        this.getMaterials();
       } else {
         this.selectedProject = null;
       }
@@ -363,11 +398,42 @@ export class AreasComponent implements OnInit, AfterViewInit {
     'groutColor',
     'cantidad',
     'layout',
+    'actions'
   ];
 
   materialDataSource = new MatTableDataSource<MaterialsInterface>(this.MATERIAL_DATA);
   
   materialsForm: FormGroup; // Este es el formulario para manejar materials
+
+  /* onMaterialSubmit() {
+    if (this.form.valid) {
+      // this.form.enable();
+      const formValue = { ...this.form.value, unidadMx: this.form.get('unidadMx')?.value }
+
+      this.dialogRef.close(formValue); // Cierra el modal y pasa los datos
+    }
+  } */
+
+  async createMaterials(material: MaterialsInterface) {
+
+    const result = await this.apiservice.create('materials/create', { ...material, customerId: this.selectedCustomer!, projectId: this.selectedProject! }).toPromise();
+    console.log('create function materials:', result)
+
+    // this.getAreas();
+    this.getMaterials();
+
+  }
+
+  async updateMaterials(material: MaterialsInterface) {
+
+    console.log('this is the material updating', material);
+
+    const { _id } = material;
+
+    const resps = await this.apiservice.update('materials', _id!, material).toPromise();
+
+    this.getMaterials();
+  }
 
   openMaterialModal(element: any) {
     const dialogRef = this.dialog.open(ModalFormMaterialsComponent, {
@@ -378,14 +444,14 @@ export class AreasComponent implements OnInit, AfterViewInit {
 
     dialogRef.afterClosed().subscribe((result: any) => {
       if (result) {
-        // console.log('Form Data:', result); // Aquí manejas los datos enviados desde el formulario
+        console.log('Form Data11:', result); // Aquí manejas los datos enviados desde el formulario
 
-        /* if (result._id === '') {
-          this.createAreas(result);
+        if (result._id === '') {
+          this.createMaterials(result);
           return;
         }
 
-        this.updateArea(result); */
+        this.updateMaterials(result);
 
       } else {
         console.log('Modal closed without data');
@@ -789,6 +855,8 @@ export class ModalFormComponent implements OnInit {
   onClose() {
     this.dialogRef.close(); // Cierra el modal sin enviar datos
   }
+  
+  
 }
 /****************************************************** 
 Fin de Modal es el de AREAS
@@ -823,7 +891,7 @@ export class ModalFormMaterialsComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private dialogRef: MatDialogRef<ModalFormMaterialsComponent>,
+    private dialogMaterialRef: MatDialogRef<ModalFormMaterialsComponent>,
     private apiservice: ApiService<any>,
     @Inject(MAT_DIALOG_DATA) public data: any // Inject the data passed to the modal
   ) {
@@ -836,8 +904,8 @@ export class ModalFormMaterialsComponent implements OnInit {
       contactName: [this.data.form.contactName || '', Validators.required],
       contactEmail: [this.data.form.contactEmail || '', Validators.required],
       style: [this.data.form.style || '', Validators.required],
-      size: [this.data.form.size || 'North', Validators.required],
-      color: [this.data.form.color || 'N/A', Validators.required],
+      size: [this.data.form.size || '', Validators.required],
+      color: [this.data.form.color || '', Validators.required],
       finishRemarks: [this.data.form.finishRemarks || '', Validators.required],
       grout: [this.data.form.grout || '', Validators.required],
       groutColor: [this.data.form.groutColor || '', Validators.required],
@@ -852,10 +920,17 @@ export class ModalFormMaterialsComponent implements OnInit {
 
   }
 
-  onSubmit() {}
+  onSubmit() {
+    if (this.materialsForm.valid) {
+      // this.materialsForm.enable();
+      const formValue = { ...this.materialsForm.value }
+
+      this.dialogMaterialRef.close(formValue); // Cierra el modal y pasa los datos
+    }
+  }
 
   onClose() {
-    this.dialogRef.close(); // Cierra el modal sin enviar datos
+    this.dialogMaterialRef.close(); // Cierra el modal sin enviar datos
   }
 
 }
