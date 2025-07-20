@@ -18,7 +18,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { Customer } from 'src/app/interfaces/customers.interface';
-import { HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Craft } from 'src/app/interfaces/crafts.interface';
 import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
@@ -28,6 +28,7 @@ import { Subscription } from 'rxjs';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { Project } from 'src/app/interfaces/projects.interface';
 import { MaterialsInterface } from 'src/app/interfaces/materials.interface';
+import { environment } from 'src/environments/environment.prod';
 
 @Component({
   selector: 'app-areas',
@@ -50,6 +51,8 @@ export class AreasComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
+  private readonly apiUrl = environment.apiUrl;
+  
   PRODUCT_DATA: AreaInterface[] = [];
   // table 1
   displayedColumns: string[] = [
@@ -83,7 +86,8 @@ export class AreasComponent implements OnInit, AfterViewInit {
   constructor(
     private apiservice: ApiService<AreaInterface | BudgetDataInterface | MaterialsInterface>, //TODO: agregar propiedades para la generacion del prespuesto
     private dialog: MatDialog,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private http: HttpClient
   ) {
 
     //Form - Areas
@@ -314,7 +318,17 @@ export class AreasComponent implements OnInit, AfterViewInit {
     }
 
 
-    const result = await this.apiservice.create('areas/budget-pdf', budgetData).toPromise();
+    // const result = await this.apiservice.create('areas/budget-pdf', budgetData).toPromise();
+    this.http.post(`${this.apiUrl}pdf/generate`, budgetData, { responseType: 'blob' })
+    .subscribe((pdfBlob: Blob) => {
+      const blobUrl = window.URL.createObjectURL(pdfBlob);
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = 'AlpineCheckTest.pdf';
+      link.click();
+      window.URL.revokeObjectURL(blobUrl); // cleanup
+    });
+
     // console.log('create function', result)
   }
 
