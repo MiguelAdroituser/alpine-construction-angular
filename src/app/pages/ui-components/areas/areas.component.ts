@@ -140,6 +140,11 @@ export class AreasComponent implements OnInit, AfterViewInit {
       groutColor: ['', Validators.required],
       cantidad: ['', Validators.required],
       layout: ['', Validators.required],
+      contractorPrice: ['', Validators.required],
+      retailPrice: ['', Validators.required],
+      totalPrice: ['', Validators.required],
+      differencePrice: ['', Validators.required],
+      profit: ['', Validators.required],
 
     });
 
@@ -317,6 +322,7 @@ export class AreasComponent implements OnInit, AfterViewInit {
       areas: this.dataSource.data
     }
 
+    console.log({budgetData});
 
     // const result = await this.apiservice.create('areas/budget-pdf', budgetData).toPromise();
     this.http.post(`${this.apiUrl}pdf/generate`, budgetData, { responseType: 'blob' })
@@ -412,6 +418,13 @@ export class AreasComponent implements OnInit, AfterViewInit {
     'groutColor',
     'cantidad',
     'layout',
+
+    'contractorPrice',
+    'retailPrice',
+    'totalPrice',
+    'differencePrice',
+    'profit',
+
     'actions'
   ];
 
@@ -925,6 +938,11 @@ export class ModalFormMaterialsComponent implements OnInit {
       groutColor: [this.data.form.groutColor || '', Validators.required],
       cantidad: [this.data.form.cantidad || '', Validators.required],
       layout: [this.data.form.layout || '', Validators.required],
+      contractorPrice: [this.data.form.contractorPrice || '', Validators.required],
+      retailPrice: [this.data.form.retailPrice || '', Validators.required],
+      totalPrice: [this.data.form.totalPrice || '', Validators.required],
+      differencePrice: [this.data.form.differencePrice || '', Validators.required],
+      profit: [this.data.form.profit || '', Validators.required],
 
     });
 

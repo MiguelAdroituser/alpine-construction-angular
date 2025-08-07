@@ -80,6 +80,36 @@
         <input matInput formControlName="layout" />
         <mat-error *ngIf="materialsForm.get('layout')?.hasError('required')">Layout is required</mat-error>
       </mat-form-field>
+      
+      <mat-form-field appearance="fill">
+        <mat-label>Contractor Price</mat-label>
+        <input matInput formControlName="contractorPrice" />
+        <mat-error *ngIf="materialsForm.get('contractorPrice')?.hasError('required')">Contractor Price is required</mat-error>
+      </mat-form-field>
+      
+      <mat-form-field appearance="fill">
+        <mat-label>Retail Price</mat-label>
+        <input matInput formControlName="retailPrice" />
+        <mat-error *ngIf="materialsForm.get('retailPrice')?.hasError('required')">Retail Price is required</mat-error>
+      </mat-form-field>
+      
+      <mat-form-field appearance="fill">
+        <mat-label>Total Price</mat-label>
+        <input matInput formControlName="totalPrice" />
+        <mat-error *ngIf="materialsForm.get('totalPrice')?.hasError('required')">Total Price is required</mat-error>
+      </mat-form-field>
+      
+      <mat-form-field appearance="fill">
+        <mat-label>Difference Price</mat-label>
+        <input matInput formControlName="differencePrice" />
+        <mat-error *ngIf="materialsForm.get('differencePrice')?.hasError('required')">Difference Price is required</mat-error>
+      </mat-form-field>
+      
+      <mat-form-field appearance="fill">
+        <mat-label>Profit</mat-label>
+        <input matInput formControlName="profit" />
+        <mat-error *ngIf="materialsForm.get('profit')?.hasError('required')">Profit is required</mat-error>
+      </mat-form-field>
 
     </div>
   </form>
