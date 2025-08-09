@@ -142,6 +142,7 @@ export class AreasComponent implements OnInit, AfterViewInit {
       layout: ['', Validators.required],
       contractorPrice: ['', Validators.required],
       retailPrice: ['', Validators.required],
+      retailPrice2: ['', Validators.required],
       totalPrice: ['', Validators.required],
       differencePrice: ['', Validators.required],
       profit: ['', Validators.required],
@@ -421,6 +422,7 @@ export class AreasComponent implements OnInit, AfterViewInit {
 
     'contractorPrice',
     'retailPrice',
+    'retailPrice2',
     'totalPrice',
     'differencePrice',
     'profit',
@@ -915,6 +917,7 @@ Este Modal es el de MATERIALS
 export class ModalFormMaterialsComponent implements OnInit {
 
   materialsForm: FormGroup;
+  private subscriptions: Subscription[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -940,22 +943,101 @@ export class ModalFormMaterialsComponent implements OnInit {
       layout: [this.data.form.layout || '', Validators.required],
       contractorPrice: [this.data.form.contractorPrice || '', Validators.required],
       retailPrice: [this.data.form.retailPrice || '', Validators.required],
-      totalPrice: [this.data.form.totalPrice || '', Validators.required],
-      differencePrice: [this.data.form.differencePrice || '', Validators.required],
-      profit: [this.data.form.profit || '', Validators.required],
-
+      retailPrice2: [{ value: this.data.form.retailPrice2 || '', disabled: true }, Validators.required],
+      totalPrice: [{ value: this.data.form.totalPrice || '', disabled: true }],
+      differencePrice: [{ value: this.data.form.differencePrice || '', disabled: true }],
+      profit: [{ value: this.data.form.profit || '', disabled: true }],
     });
 
   }
 
   async ngOnInit(): Promise<void> {
+    this.listenToPriceChanges();
+  }
 
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
+
+  private listenToPriceChanges() {
+    // Listen to retailPrice changes for retailPrice2 & totalPrice
+    this.subscriptions.push(
+      this.materialsForm.get('retailPrice')?.valueChanges.subscribe(value => {
+        const retail = parseFloat(value) || 0;
+        const cantidad = parseFloat(this.materialsForm.get('cantidad')?.value) || 0;
+
+        // retailPrice2 = retail + 20%
+        this.materialsForm.patchValue(
+          { retailPrice2: (retail * 1.2).toFixed(2) },
+          { emitEvent: false }
+        );
+
+        // totalPrice = cantidad * retailPrice
+        this.materialsForm.patchValue(
+          { totalPrice: (cantidad * retail).toFixed(2) },
+          { emitEvent: false }
+        );
+
+        this.updateProfit();
+      }) || new Subscription()
+    );
+
+    // Listen to cantidad changes for totalPrice & differencePrice
+    this.subscriptions.push(
+      this.materialsForm.get('cantidad')?.valueChanges.subscribe(value => {
+        const cantidad = parseFloat(value) || 0;
+        const retail = parseFloat(this.materialsForm.get('retailPrice')?.value) || 0;
+        const contractor = parseFloat(this.materialsForm.get('contractorPrice')?.value) || 0;
+
+        // totalPrice
+        this.materialsForm.patchValue(
+          { totalPrice: (cantidad * retail).toFixed(2) },
+          { emitEvent: false }
+        );
+
+        // differencePrice
+        this.materialsForm.patchValue(
+          { differencePrice: (cantidad * contractor).toFixed(2) },
+          { emitEvent: false }
+        );
+
+        this.updateProfit();
+      }) || new Subscription()
+    );
+
+    // Listen to contractorPrice changes for differencePrice
+    this.subscriptions.push(
+      this.materialsForm.get('contractorPrice')?.valueChanges.subscribe(value => {
+        const contractor = parseFloat(value) || 0;
+        const cantidad = parseFloat(this.materialsForm.get('cantidad')?.value) || 0;
+
+        this.materialsForm.patchValue(
+          { differencePrice: (cantidad * contractor).toFixed(2) },
+          { emitEvent: false }
+        );
+
+        this.updateProfit();
+      }) || new Subscription()
+    );
+  }
+
+  private updateProfit() {
+    const total = parseFloat(this.materialsForm.get('totalPrice')?.value) || 0;
+    const diff = parseFloat(this.materialsForm.get('differencePrice')?.value) || 0;
+
+    this.materialsForm.patchValue(
+      { profit: (total - diff).toFixed(2) },
+      { emitEvent: false }
+    );
   }
 
   onSubmit() {
     if (this.materialsForm.valid) {
       // this.materialsForm.enable();
       const formValue = { ...this.materialsForm.value }
+
+      //nota: esta eliminando algunas propiedades por eso no se crea 
+      console.log({ formValue })
 
       this.dialogMaterialRef.close(formValue); // Cierra el modal y pasa los datos
     }

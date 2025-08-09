@@ -94,16 +94,21 @@
       </mat-form-field>
       
       <mat-form-field appearance="fill">
+        <mat-label>Retail Price 2</mat-label>
+        <input matInput formControlName="retailPrice2" readonly />
+      </mat-form-field>
+      
+      <mat-form-field appearance="fill">
         <mat-label>Total Price</mat-label>
         <input matInput formControlName="totalPrice" />
         <mat-error *ngIf="materialsForm.get('totalPrice')?.hasError('required')">Total Price is required</mat-error>
       </mat-form-field>
       
-      <mat-form-field appearance="fill">
+      <!-- <mat-form-field appearance="fill">
         <mat-label>Difference Price</mat-label>
         <input matInput formControlName="differencePrice" />
         <mat-error *ngIf="materialsForm.get('differencePrice')?.hasError('required')">Difference Price is required</mat-error>
-      </mat-form-field>
+      </mat-form-field> -->
       
       <mat-form-field appearance="fill">
         <mat-label>Profit</mat-label>
