@@ -320,7 +320,8 @@ export class AreasComponent implements OnInit, AfterViewInit {
       projectName: project?.projectName,
       location: project?.location,
       //Crafts - Areas
-      areas: this.dataSource.data
+      areas: this.dataSource.data,
+      materials: this.materialDataSource.data
     }
 
     console.log({budgetData});
@@ -1033,8 +1034,15 @@ export class ModalFormMaterialsComponent implements OnInit {
 
   onSubmit() {
     if (this.materialsForm.valid) {
+     
       // this.materialsForm.enable();
-      const formValue = { ...this.materialsForm.value }
+      const formValue = { 
+        ...this.materialsForm.value, 
+        retailPrice2: this.materialsForm.get('retailPrice2')?.value,
+        totalPrice: this.materialsForm.get('totalPrice')?.value,
+        differencePrice: this.materialsForm.get('differencePrice')?.value,
+        profit: this.materialsForm.get('profit')?.value,
+      }
 
       //nota: esta eliminando algunas propiedades por eso no se crea 
       console.log({ formValue })

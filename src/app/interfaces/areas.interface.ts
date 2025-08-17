@@ -1,3 +1,5 @@
+import { MaterialsInterface } from "./materials.interface";
+
 export interface AreaInterface {
     customerId: string; //Required
     projectId: string; //Required
@@ -35,4 +37,6 @@ export interface BudgetDataInterface {
     location: string | undefined;
     // crafts - areas
     areas: AreaInterface[];
+    //materials
+    materials: MaterialsInterface[];
   }
