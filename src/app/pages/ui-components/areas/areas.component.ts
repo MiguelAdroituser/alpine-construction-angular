@@ -29,7 +29,9 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { Project } from 'src/app/interfaces/projects.interface';
 import { MaterialsInterface } from 'src/app/interfaces/materials.interface';
 import { environment } from 'src/environments/environment.prod';
+import { ConsumablesInterface } from 'src/app/interfaces/consumables.interface';
 
+//NOTA: en este componente se manejan Areas, Materials, Consumables(equiments & fleight).
 @Component({
   selector: 'app-areas',
   standalone: true,
@@ -84,7 +86,7 @@ export class AreasComponent implements OnInit, AfterViewInit {
   selectedProject: string | null = null;
 
   constructor(
-    private apiservice: ApiService<AreaInterface | BudgetDataInterface | MaterialsInterface>, //TODO: agregar propiedades para la generacion del prespuesto
+    private apiservice: ApiService<AreaInterface | BudgetDataInterface | MaterialsInterface | ConsumablesInterface>, //TODO: agregar propiedades para la generacion del prespuesto
     private dialog: MatDialog,
     private fb: FormBuilder,
     private http: HttpClient
@@ -149,6 +151,16 @@ export class AreasComponent implements OnInit, AfterViewInit {
 
     });
 
+    //Form - Consumables
+    this.consumablesForm = this.fb.group({
+      craftId: ['', Validators.required],
+      craft: ['', Validators.required],
+      area: ['', Validators.required],
+      consumables: ['', Validators.required],
+      equipment: ['', Validators.required],
+      freight: ['', Validators.required],
+    })
+
     // this.getAreas();
     this.getCustomers();
     // this.getCrafts();
@@ -156,21 +168,26 @@ export class AreasComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    // Configura la fuente de datos (AREAS)
+    // Configuración para Areas
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
 
     // Configuración para MATERIALS
     this.materialDataSource.paginator = this.materialPaginator;
     this.materialDataSource.sort = this.materialSort;
+
+    // Configuración para CONSUMABLES
+    this.consumableDataSource.paginator = this.consumablesPaginator;
+    this.consumableDataSource.sort = this.consumablesSort;
   }
 
   ngAfterViewInit(): void {
     // Paginator Areas
     this.dataSource.paginator = this.paginator; // Vincula el paginador al DataSource
-
     // Paginator Materials
     this.materialDataSource.paginator = this.materialPaginator;
+    // Paginador Consumables
+    this.consumableDataSource.paginator = this.consumablesPaginator;
   }
 
 
@@ -285,6 +302,9 @@ export class AreasComponent implements OnInit, AfterViewInit {
 
       //TEST get materials
       this.getMaterials();
+
+      // get consumables
+      this.getConsumables();
     }
   }
 
@@ -298,6 +318,17 @@ export class AreasComponent implements OnInit, AfterViewInit {
       * client name, company name, number, email, address (customer).
       * Investigar como enviar los crafts y sus totales. [preguntar a joel]
     */
+
+      /* PENDIENTE:
+      NOTA 2:
+        * Agregar el input en el modal de areas
+        * craft - area : 
+          *  Considerar en un array los craft que se vayan agregando en las
+          *  areas y colocar el consumable/equipment.
+          * 
+          * MOstrar el mismo valor si se vuelve a seleccionar el mismo
+          * craft
+      */
 
     // console.log('this.customers', this.customers);
     const customer = this.customers.find(c => c._id === this.selectedCustomer);
@@ -354,8 +385,11 @@ export class AreasComponent implements OnInit, AfterViewInit {
         this.selectedProject = projects[0]._id; // Select first project
         this.getAreas(); // Fetch areas based on customer & project
 
-        //TEST get Materials
+        // get Materials
         this.getMaterials();
+
+        // get Consumables
+        this.getConsumables();
       } else {
         this.selectedProject = null;
       }
@@ -435,15 +469,6 @@ export class AreasComponent implements OnInit, AfterViewInit {
   
   materialsForm: FormGroup; // Este es el formulario para manejar materials
 
-  /* onMaterialSubmit() {
-    if (this.form.valid) {
-      // this.form.enable();
-      const formValue = { ...this.form.value, unidadMx: this.form.get('unidadMx')?.value }
-
-      this.dialogRef.close(formValue); // Cierra el modal y pasa los datos
-    }
-  } */
-
   async createMaterials(material: MaterialsInterface) {
 
     const result = await this.apiservice.create('materials/create', { ...material, customerId: this.selectedCustomer!, projectId: this.selectedProject! }).toPromise();
@@ -490,6 +515,66 @@ export class AreasComponent implements OnInit, AfterViewInit {
 
   }
   /* FIN DE SECCIÓN PARA MATERIALS - FUNCIONES ETC. */
+
+  /* SECCIÓN PARA CONSUMABLES, EQUIPMENTS, FREIGHT */
+  @ViewChild(MatPaginator) consumablesPaginator!: MatPaginator;
+  @ViewChild(MatSort) consumablesSort!: MatSort;
+
+  CONSUMABLE_DATA: ConsumablesInterface[] = [];
+
+  displayedConsumableColumns: string[] = [
+    'craft',
+    'area',
+    'consumables',
+    'equipment',
+    'freight',
+    'actions'
+  ];
+
+  consumableDataSource = new MatTableDataSource<ConsumablesInterface>(this.CONSUMABLE_DATA);
+
+  consumablesForm: FormGroup;
+
+  async createConsumables(consumable: ConsumablesInterface) {
+
+    const result = await this.apiservice.create('consumables/create', { ...consumable, customerId: this.selectedCustomer!, projectId: this.selectedProject! }).toPromise();
+    console.log('create function consumables:', result)
+
+    // this.getAreas();
+    this.getConsumables();
+
+  }
+
+  async getConsumables(){
+    const params = new HttpParams()
+      .set('customerId', this.selectedCustomer || '')
+      .set('projectId', this.selectedProject || '');
+
+      try {
+      const resps = await this.apiservice.callGetApi<any>('consumables', params).toPromise();
+      
+      console.log('these are consumables from BD:', resps);
+
+      this.CONSUMABLE_DATA= [ ...resps ];
+      this.consumableDataSource.data = this.CONSUMABLE_DATA;
+      
+
+      this.consumableDataSource.paginator = this.consumablesPaginator;
+      this.consumableDataSource.sort = this.consumablesSort;
+
+    } catch (error) {
+      console.error('Error fetching consumables:', error);
+    }
+
+  }
+
+  //NOTA:
+  //TODO: falta tabla html, modal html y configuaraciones para modal.
+  openConsumableModal(element: any) {
+  
+  }
+
+  /* FIN DE SECCIÓN PARA CONSUMABLES, EQUIPMENTS, FREIGHT */
 
 }
 
