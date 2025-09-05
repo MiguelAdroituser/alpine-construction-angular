@@ -1,3 +1,4 @@
+import { ConsumablesInterface } from "./consumables.interface";
 import { MaterialsInterface } from "./materials.interface";
 
 export interface AreaInterface {
@@ -39,4 +40,5 @@ export interface BudgetDataInterface {
     areas: AreaInterface[];
     //materials
     materials: MaterialsInterface[];
+    consumables: ConsumablesInterface[];
   }

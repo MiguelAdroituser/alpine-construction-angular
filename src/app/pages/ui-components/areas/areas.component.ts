@@ -352,7 +352,8 @@ export class AreasComponent implements OnInit, AfterViewInit {
       location: project?.location,
       //Crafts - Areas
       areas: this.dataSource.data,
-      materials: this.materialDataSource.data
+      materials: this.materialDataSource.data,
+      consumables: this.consumableDataSource.data
     }
 
     console.log({budgetData});
@@ -481,7 +482,7 @@ export class AreasComponent implements OnInit, AfterViewInit {
 
   async updateMaterials(material: MaterialsInterface) {
 
-    console.log('this is the material updating', material);
+    // console.log('this is the material updating', material);
 
     const { _id } = material;
 
@@ -568,10 +569,41 @@ export class AreasComponent implements OnInit, AfterViewInit {
 
   }
 
-  //NOTA:
-  //TODO: falta tabla html, modal html y configuaraciones para modal.
+  async updateConsumables( consumable: ConsumablesInterface ) {
+
+    console.log('this is the consumable updating', consumable);
+
+    const { _id } = consumable;
+
+    //TODO: revisar el endpoint que actualiza en consumables backend.
+    const resps = await this.apiservice.update('consumables', _id!, consumable).toPromise();
+
+    this.getConsumables();
+
+  }
+
   openConsumableModal(element: any) {
-  
+    const dialogRef = this.dialog.open(ModalFormConsumablesComponent, {
+      width: '400px',
+      data: { form: element }
+    });
+
+    dialogRef.afterClosed().subscribe(( result: any ) => {
+      if (result) {
+        console.log('Form consumables result:', result);
+
+        if (result._id === '') {
+          this.createConsumables(result);
+          return;
+        }
+
+        this.updateConsumables(result);
+
+      } else {
+        console.log('Modal closed without data');
+      }
+    })
+
   }
 
   /* FIN DE SECCIÓN PARA CONSUMABLES, EQUIPMENTS, FREIGHT */
@@ -978,7 +1010,6 @@ Fin de Modal es el de AREAS
 ******************************************************/
 
 
-
 /****************************************************** 
 Este Modal es el de MATERIALS
 ******************************************************/
@@ -1143,4 +1174,107 @@ export class ModalFormMaterialsComponent implements OnInit {
 }
 /****************************************************** 
 Fin de Modal es el de MATERIALS
+******************************************************/
+
+
+/****************************************************** 
+Este Modal es el de CONSUMABLES
+******************************************************/
+
+@Component({
+  selector: 'app-consumables-modal',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatGridListModule,
+    MatSelectModule,
+    MatOptionModule,
+    MatCheckboxModule, //NuevoManuel CheckBoxes
+  ],
+  templateUrl: './consumables-modal.component.html',
+  styleUrls: ['./materials.component.scss'] //se utiliza el mismo diseño que materials.
+})
+export class ModalFormConsumablesComponent implements OnInit {
+  consumablesForm: FormGroup;
+  private subscriptions: Subscription[] = [];
+  craftOptions: Craft[] = [];
+  private bs!: Subscription | undefined;
+
+  constructor(
+    private fb: FormBuilder,
+    private dialogConsumableRef: MatDialogRef<ModalFormConsumablesComponent>,
+    private apiservice: ApiService<any>,
+    @Inject(MAT_DIALOG_DATA) public data: any // Inject the data passed to the modal
+  ) {
+    this.consumablesForm = this.fb.group({
+      _id: [this.data.form._id || ''],
+      craftId: [this.data.form.craftId || '', Validators.required],
+      craft: [this.data.form.craft || '', Validators.required],
+      area: [this.data.form.area || '', Validators.required],
+      consumables: [this.data.form.consumables || '', Validators.required],
+      equipment: [this.data.form.equipment || '', Validators.required],
+      freight: [this.data.form.freight || '', Validators.required],
+    })
+  }
+
+  async ngOnInit(): Promise<void> {
+    console.log('oninit cylce of consumables form.');
+    await this.loadCraftOptions();
+    this.craftIdSuscription();
+  }
+
+  async loadCraftOptions() {
+
+    const crafts = await this.apiservice.findAll('crafts').toPromise();
+    //console.log({ crafts })
+    this.craftOptions = crafts;
+  }
+
+  craftIdSuscription() {
+
+    this.bs = this.consumablesForm.get('craftId')?.valueChanges.subscribe(craftId => {
+      
+
+      // Find the selected craft from craftOptions
+      const selectedCraft = this.craftOptions.find(option => option._id === craftId);
+
+      // Prevent areaSubscription from triggering recursively
+
+      if (selectedCraft) {
+        this.consumablesForm.patchValue({
+          craft: selectedCraft.name,
+          area: selectedCraft.area
+        });
+      }
+
+    });
+  }
+
+  onSubmit() {
+    if ( this.consumablesForm.valid ) {
+      const formValue = { ...this.consumablesForm.value };
+
+      console.log('form value of consumables form', formValue);
+
+      this.dialogConsumableRef.close( formValue );
+    }
+  }
+
+  onClose() {
+    this.dialogConsumableRef.close();
+  }
+
+  ngOnDestroy(): void {
+    // Desuscribirse de todas las suscripciones para evitar pérdidas de memoria.
+    this.bs?.unsubscribe();
+  }
+
+}
+/****************************************************** 
+Fin de Modal es el de CONSUMABLES
 ******************************************************/

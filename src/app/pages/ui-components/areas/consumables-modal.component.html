@@ -1,0 +1,57 @@
+<h2 mat-dialog-title>Consumables</h2>
+<mat-dialog-content>
+  <form [formGroup]="consumablesForm">
+    <div class="form-grid">
+
+      <mat-form-field appearance="fill">
+        <mat-label>Craft - Area</mat-label>
+        <mat-select formControlName="craftId">
+          <mat-option *ngFor="let option of craftOptions" [value]="option._id">
+            {{ option.name }} - {{ option.area }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="consumablesForm.get('craft')?.hasError('required')">
+          Craft is required
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Area</mat-label>
+        <input matInput formControlName="area" readonly />
+      </mat-form-field>
+      
+      <mat-form-field appearance="fill">
+        <mat-label>Craft</mat-label>
+        <input matInput formControlName="craft" readonly />
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Consumables</mat-label>
+        <input matInput type="number" formControlName="consumables"/>
+        <mat-error *ngIf="consumablesForm.get('consumables')?.hasError('required')">Consumables is required</mat-error>
+      </mat-form-field>
+      
+      <mat-form-field appearance="fill">
+        <mat-label>Equipment</mat-label>
+        <input matInput type="number" formControlName="equipment"/>
+        <mat-error *ngIf="consumablesForm.get('equipment')?.hasError('required')">Equipment is required</mat-error>
+      </mat-form-field>
+      
+      <mat-form-field appearance="fill">
+        <mat-label>Freight</mat-label>
+        <input matInput type="number" formControlName="freight"/>
+        <mat-error *ngIf="consumablesForm.get('freight')?.hasError('required')">Freight is required</mat-error>
+      </mat-form-field>
+
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onClose()">Cancel</button>
+  <button mat-flat-button color="primary" (click)="onSubmit()" [disabled]="consumablesForm.invalid">
+    Submit
+  </button>
+</mat-dialog-actions>
+
+
