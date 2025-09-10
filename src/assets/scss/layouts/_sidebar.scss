@@ -15,6 +15,12 @@
   position: relative;
 }
 
+.logo-alpine-sidebar-img {
+  width: 180px;   // or any size you want
+  height: auto;   // keeps proportions
+  max-height: 120px; // optional limit
+}
+
 .sidebar-list {
   &.mdc-list {
     padding: 0 16px;

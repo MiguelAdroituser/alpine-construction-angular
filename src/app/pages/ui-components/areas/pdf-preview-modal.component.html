@@ -1,0 +1,28 @@
+<h2 mat-dialog-title>PDF Preview</h2>
+
+<mat-dialog-content class="pdf-preview-content">
+  <div class="preview-container">
+    
+    <!-- Options column -->
+    <div class="options-panel">
+      <h4>Options</h4>
+
+      <!-- 👇 Wrap all checkboxes inside a form -->
+      <form [formGroup]="optionsForm">
+        <mat-checkbox formControlName="showLogo">Show Logo</mat-checkbox>
+        <mat-checkbox formControlName="showTotals">Show Totals</mat-checkbox>
+        <mat-checkbox formControlName="highlightCrafts">Highlight Crafts</mat-checkbox>
+      </form>
+    </div>
+
+    <!-- PDF Preview -->
+    <div class="iframe-panel">
+      <iframe [src]="data.pdfUrl" width="100%" height="100%"></iframe>
+    </div>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onClose()">Cancel</button>
+  <button mat-flat-button color="primary" (click)="onApplyChanges()">Apply Changes</button>
+</mat-dialog-actions>

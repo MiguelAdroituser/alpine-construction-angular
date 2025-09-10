@@ -319,7 +319,7 @@ export class AreasComponent implements OnInit, AfterViewInit {
       * Investigar como enviar los crafts y sus totales. [preguntar a joel]
     */
 
-      /* PENDIENTE:
+    /* PENDIENTE:
       NOTA 2:
         * Agregar el input en el modal de areas
         * craft - area : 
@@ -330,15 +330,9 @@ export class AreasComponent implements OnInit, AfterViewInit {
           * craft
       */
 
-    // console.log('this.customers', this.customers);
     const customer = this.customers.find(c => c._id === this.selectedCustomer);
-    // console.log('selected', customer);
 
-    // console.log('this.projects', this.projects);
     const project = this.projects.find(c => c._id === this.selectedProject);
-    // console.log('project selected', project);
-
-    // console.log('info of crafts', this.dataSource.data)
 
     const budgetData: BudgetDataInterface = {
       //customer data
@@ -358,8 +352,9 @@ export class AreasComponent implements OnInit, AfterViewInit {
 
     console.log({budgetData});
 
-    // const result = await this.apiservice.create('areas/budget-pdf', budgetData).toPromise();
-    this.http.post(`${this.apiUrl}pdf/generate`, budgetData, { responseType: 'blob' })
+    this.openPdfPreviewModal(budgetData);
+
+    /* this.http.post(`${this.apiUrl}pdf/generate`, budgetData, { responseType: 'blob' })
     .subscribe((pdfBlob: Blob) => {
       const blobUrl = window.URL.createObjectURL(pdfBlob);
       const link = document.createElement('a');
@@ -367,9 +362,8 @@ export class AreasComponent implements OnInit, AfterViewInit {
       link.download = 'AlpineCheckTest.pdf';
       link.click();
       window.URL.revokeObjectURL(blobUrl); // cleanup
-    });
+    }); */
 
-    // console.log('create function', result)
   }
 
   async getProjects() {
@@ -607,6 +601,31 @@ export class AreasComponent implements OnInit, AfterViewInit {
   }
 
   /* FIN DE SECCIÓN PARA CONSUMABLES, EQUIPMENTS, FREIGHT */
+
+
+  //modal
+  openPdfPreviewModal(budgetData: any) {
+  this.http.post(`${this.apiUrl}pdf/generate`, budgetData, { responseType: 'blob' })
+    .subscribe((pdfBlob: Blob) => {
+      const blobUrl = window.URL.createObjectURL(pdfBlob);
+
+      const dialogRef = this.dialog.open(ModalPdfPreviewComponent, {
+        width: '80%',
+        height: '90%',
+        data: { pdfUrl: blobUrl, budgetData }
+      });
+
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          console.log('PDF modal closed with changes:', result);
+          // Here you could regenerate PDF with new options
+          this.openPdfPreviewModal(result);
+        }
+      });
+    });
+}
+
+  //modal
 
 }
 
@@ -1277,4 +1296,54 @@ export class ModalFormConsumablesComponent implements OnInit {
 }
 /****************************************************** 
 Fin de Modal es el de CONSUMABLES
+******************************************************/
+
+/****************************************************** 
+Este Modal es el de PDF VIEWER
+******************************************************/
+@Component({
+  selector: 'app-pdf-preview-modal',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatDialogModule,
+    MatButtonModule,
+    MatCheckboxModule
+  ],
+  templateUrl: './pdf-preview-modal.component.html',
+  styleUrls: ['./pdf-preview-modal.component.scss']
+})
+export class ModalPdfPreviewComponent {
+  optionsForm: FormGroup;
+
+  constructor(
+    private fb: FormBuilder,
+    public dialogRef: MatDialogRef<ModalPdfPreviewComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: { pdfUrl: string, budgetData: any }
+  ) {
+    // Initialize form with defaults
+    this.optionsForm = this.fb.group({
+      showLogo: [true],
+      showTotals: [true],
+      highlightCrafts: [false]
+    });
+  }
+
+  onClose() {
+    this.dialogRef.close();
+  }
+
+  onApplyChanges() {
+    // Merge form values into budgetData
+    const updatedData = {
+      ...this.data.budgetData,
+      designOptions: this.optionsForm.value
+    };
+
+    this.dialogRef.close(updatedData);
+  }
+}
+/****************************************************** 
+Fin de Modal es el de PDF VIEWER
 ******************************************************/

@@ -9,8 +9,8 @@ import { RouterModule } from '@angular/router';
     <div class="branding">
       <a [routerLink]="['/']">
         <img
-          src="./assets/images/logos/logo.svg"
-          class="align-middle m-2"
+          src="./assets/images/logos/alpine-construction.png"
+          class="logo-alpine-sidebar-img align-middle m-2"
           alt="logo"
         />
       </a>

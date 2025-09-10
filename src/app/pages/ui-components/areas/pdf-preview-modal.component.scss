@@ -1,0 +1,39 @@
+.preview-container {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  height: 100%; // ensures full modal height
+  margin: 16px; // same spacing as .table-container
+}
+
+.options-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 220px;
+  flex-shrink: 0;
+  padding: 8px;
+  border-right: 1px solid #ddd;
+}
+
+.iframe-panel {
+  flex-grow: 1;
+  overflow: hidden;
+
+  iframe {
+    border: none;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+/* Reuse form-grid layout if you later add inputs */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+
+  .full-width {
+    grid-column: span 2;
+  }
+}

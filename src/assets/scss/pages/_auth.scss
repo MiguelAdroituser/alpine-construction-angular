@@ -14,6 +14,12 @@
   height: calc(100vh - 83px);
 }
 
+.logo-alpine-img {
+  width: 200px;   // or any size you want
+  height: auto;   // keeps proportions
+  max-height: 160px; // optional limit
+}
+
 .custom-row {
   &.row {
     margin-right: -8px;
