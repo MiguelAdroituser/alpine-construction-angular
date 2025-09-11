@@ -23,6 +23,7 @@ import { Craft } from 'src/app/interfaces/crafts.interface';
 import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { Subscription } from 'rxjs';
+import { SafeUrlPipe } from './safe-url.pipe'; // 👈 import pipe
 
 //Nuevo Manuel
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -1309,7 +1310,8 @@ Este Modal es el de PDF VIEWER
     ReactiveFormsModule,
     MatDialogModule,
     MatButtonModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    SafeUrlPipe
   ],
   templateUrl: './pdf-preview-modal.component.html',
   styleUrls: ['./pdf-preview-modal.component.scss']

@@ -17,7 +17,7 @@
 
     <!-- PDF Preview -->
     <div class="iframe-panel">
-      <iframe [src]="data.pdfUrl" width="100%" height="100%"></iframe>
+      <iframe [src]="data.pdfUrl | safeUrl" width="100%" height="100%"></iframe>
     </div>
   </div>
 </mat-dialog-content>
