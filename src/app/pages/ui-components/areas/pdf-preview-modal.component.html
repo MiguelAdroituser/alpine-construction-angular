@@ -9,9 +9,9 @@
 
       <!-- 👇 Wrap all checkboxes inside a form -->
       <form [formGroup]="optionsForm">
-        <mat-checkbox formControlName="showLogo">Show Logo</mat-checkbox>
-        <mat-checkbox formControlName="showTotals">Show Totals</mat-checkbox>
-        <mat-checkbox formControlName="highlightCrafts">Highlight Crafts</mat-checkbox>
+        <div *ngFor="let craft of data.crafts">
+          <mat-checkbox [formControlName]="craft">{{ craft }}</mat-checkbox>
+        </div>
       </form>
     </div>
 

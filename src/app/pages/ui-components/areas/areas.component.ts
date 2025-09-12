@@ -352,8 +352,18 @@ export class AreasComponent implements OnInit, AfterViewInit {
     }
 
     console.log({budgetData});
+    
+    // const crafts = this.dataSource.data.map(item => item.craft);
+    const crafts = [...new Set(this.dataSource.data.map(item => item.craft))];
+    
+    console.log({crafts});
 
-    this.openPdfPreviewModal(budgetData);
+    if ( crafts.length === 0 ) {
+      console.error('No tenemos crafts');
+      return;
+    }
+
+    this.openPdfPreviewModal(budgetData, crafts);
 
     /* this.http.post(`${this.apiUrl}pdf/generate`, budgetData, { responseType: 'blob' })
     .subscribe((pdfBlob: Blob) => {
@@ -605,7 +615,7 @@ export class AreasComponent implements OnInit, AfterViewInit {
 
 
   //modal
-  openPdfPreviewModal(budgetData: any) {
+  openPdfPreviewModal(budgetData: any, crafts: string[]) {
   this.http.post(`${this.apiUrl}pdf/generate`, budgetData, { responseType: 'blob' })
     .subscribe((pdfBlob: Blob) => {
       const blobUrl = window.URL.createObjectURL(pdfBlob);
@@ -613,14 +623,14 @@ export class AreasComponent implements OnInit, AfterViewInit {
       const dialogRef = this.dialog.open(ModalPdfPreviewComponent, {
         width: '80%',
         height: '90%',
-        data: { pdfUrl: blobUrl, budgetData }
+        data: { pdfUrl: blobUrl, budgetData, crafts }
       });
 
       dialogRef.afterClosed().subscribe(result => {
         if (result) {
           console.log('PDF modal closed with changes:', result);
           // Here you could regenerate PDF with new options
-          this.openPdfPreviewModal(result);
+          this.openPdfPreviewModal(result, crafts);
         }
       });
     });
@@ -1322,14 +1332,17 @@ export class ModalPdfPreviewComponent {
   constructor(
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<ModalPdfPreviewComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { pdfUrl: string, budgetData: any }
+    @Inject(MAT_DIALOG_DATA) public data: { pdfUrl: string, budgetData: any, crafts: string[] }
   ) {
-    // Initialize form with defaults
-    this.optionsForm = this.fb.group({
-      showLogo: [true],
-      showTotals: [true],
-      highlightCrafts: [false]
+    // Start with an empty form config
+    const formConfig: any = {};
+
+    // Dynamically add a control for each craft
+    this.data.crafts.forEach(craft => {
+      formConfig[craft] = [true]; // or false as default if you prefer
     });
+
+    this.optionsForm = this.fb.group(formConfig);
   }
 
   onClose() {
@@ -1337,7 +1350,6 @@ export class ModalPdfPreviewComponent {
   }
 
   onApplyChanges() {
-    // Merge form values into budgetData
     const updatedData = {
       ...this.data.budgetData,
       designOptions: this.optionsForm.value
