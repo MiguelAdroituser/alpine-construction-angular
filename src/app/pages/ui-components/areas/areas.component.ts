@@ -317,23 +317,27 @@ export class AreasComponent implements OnInit, AfterViewInit {
       que debe llevar el JSON para el budget:
       * project name, location, (start date, end date) (projects).
       * client name, company name, number, email, address (customer).
-      * Investigar como enviar los crafts y sus totales. [preguntar a joel]
     */
-
-    /* PENDIENTE:
-      NOTA 2:
-        * Agregar el input en el modal de areas
-        * craft - area : 
-          *  Considerar en un array los craft que se vayan agregando en las
-          *  areas y colocar el consumable/equipment.
-          * 
-          * MOstrar el mismo valor si se vuelve a seleccionar el mismo
-          * craft
-      */
 
     const customer = this.customers.find(c => c._id === this.selectedCustomer);
 
     const project = this.projects.find(c => c._id === this.selectedProject);
+
+    // const crafts = this.dataSource.data.map(item => item.craft);
+    const crafts = [...new Set(this.dataSource.data.map(item => item.craft))];
+    
+    console.log({crafts});
+  
+    if ( crafts.length === 0 ) {
+      console.error('No tenemos crafts');
+      return;
+    }
+
+    // ✅ initialize designOptions dynamically from crafts
+    const designOptions = crafts.reduce((acc, craft) => {
+      acc[craft] = true; // or false if you want unchecked initially
+      return acc;
+    }, {} as Record<string, boolean>);
 
     const budgetData: BudgetDataInterface = {
       //customer data
@@ -348,32 +352,14 @@ export class AreasComponent implements OnInit, AfterViewInit {
       //Crafts - Areas
       areas: this.dataSource.data,
       materials: this.materialDataSource.data,
-      consumables: this.consumableDataSource.data
+      consumables: this.consumableDataSource.data,
+      designOptions
     }
 
     console.log({budgetData});
     
-    // const crafts = this.dataSource.data.map(item => item.craft);
-    const crafts = [...new Set(this.dataSource.data.map(item => item.craft))];
-    
-    console.log({crafts});
-
-    if ( crafts.length === 0 ) {
-      console.error('No tenemos crafts');
-      return;
-    }
 
     this.openPdfPreviewModal(budgetData, crafts);
-
-    /* this.http.post(`${this.apiUrl}pdf/generate`, budgetData, { responseType: 'blob' })
-    .subscribe((pdfBlob: Blob) => {
-      const blobUrl = window.URL.createObjectURL(pdfBlob);
-      const link = document.createElement('a');
-      link.href = blobUrl;
-      link.download = 'AlpineCheckTest.pdf';
-      link.click();
-      window.URL.revokeObjectURL(blobUrl); // cleanup
-    }); */
 
   }
 
@@ -1328,6 +1314,7 @@ Este Modal es el de PDF VIEWER
 })
 export class ModalPdfPreviewComponent {
   optionsForm: FormGroup;
+  allDisabled = false;
 
   constructor(
     private fb: FormBuilder,
@@ -1339,10 +1326,19 @@ export class ModalPdfPreviewComponent {
 
     // Dynamically add a control for each craft
     this.data.crafts.forEach(craft => {
-      formConfig[craft] = [true]; // or false as default if you prefer
+      const previousValue = this.data.budgetData.designOptions?.[craft];
+      formConfig[craft] = [previousValue ?? true]; // ✅ use saved value, default true if none
     });
 
     this.optionsForm = this.fb.group(formConfig);
+
+    // Subscribe to value changes
+    this.optionsForm.valueChanges.subscribe(value => {
+      this.allDisabled = !Object.values(value).some(v => v === true);
+    });
+
+    // Initialize on load
+    this.allDisabled = !Object.values(this.optionsForm.value).some(v => v === true);
   }
 
   onClose() {

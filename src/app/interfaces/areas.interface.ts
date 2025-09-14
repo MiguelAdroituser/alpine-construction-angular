@@ -38,7 +38,12 @@ export interface BudgetDataInterface {
     location: string | undefined;
     // crafts - areas
     areas: AreaInterface[];
+    craftsToShow?: string[];
     //materials
     materials: MaterialsInterface[];
     consumables: ConsumablesInterface[];
+
+    designOptions?: {
+    [craftName: string]: boolean;
+  };
   }
