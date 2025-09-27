@@ -334,10 +334,19 @@ export class AreasComponent implements OnInit, AfterViewInit {
     }
 
     // ✅ initialize designOptions dynamically from crafts
-    const designOptions = crafts.reduce((acc, craft) => {
+    /* const designOptions = crafts.reduce((acc, craft) => {
       acc[craft] = true; // or false if you want unchecked initially
       return acc;
-    }, {} as Record<string, boolean>);
+    }, {} as Record<string, boolean>); */
+
+    // ✅ initialize designOptions dynamically with {enabled, value}
+    const designOptions = crafts.reduce((acc, craft) => {
+      acc[craft] = {
+        enabled: true,   // default checkbox ON
+        value: 0         // default numeric input
+      };
+      return acc;
+    }, {} as Record<string, { enabled: boolean; value: number }>);
 
     const budgetData: BudgetDataInterface = {
       //customer data
@@ -357,6 +366,7 @@ export class AreasComponent implements OnInit, AfterViewInit {
     }
 
     console.log({budgetData});
+    console.log({designOptions});
     
 
     this.openPdfPreviewModal(budgetData, crafts);
@@ -602,6 +612,7 @@ export class AreasComponent implements OnInit, AfterViewInit {
 
   //modal
   openPdfPreviewModal(budgetData: any, crafts: string[]) {
+    console.log('budgetData modal', budgetData)
   this.http.post(`${this.apiUrl}pdf/generate`, budgetData, { responseType: 'blob' })
     .subscribe((pdfBlob: Blob) => {
       const blobUrl = window.URL.createObjectURL(pdfBlob);
@@ -1321,6 +1332,50 @@ export class ModalPdfPreviewComponent {
     public dialogRef: MatDialogRef<ModalPdfPreviewComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { pdfUrl: string, budgetData: any, crafts: string[] }
   ) {
+    const formConfig: any = {};
+
+    this.data.crafts.forEach(craft => {
+      const previousValue = this.data.budgetData.designOptions?.[craft];
+
+      formConfig[craft] = this.fb.group({
+        enabled: [previousValue?.enabled ?? true],
+        value: [previousValue?.value ?? 0]
+      });
+    });
+
+    this.optionsForm = this.fb.group(formConfig);
+
+    // Watch value changes for disabling button
+    this.optionsForm.valueChanges.subscribe(value => {
+      this.allDisabled = !Object.values(value).some((v: any) => v.enabled === true);
+    });
+
+    this.allDisabled = !Object.values(this.optionsForm.value).some((v: any) => v.enabled === true);
+  }
+
+  onClose() {
+    this.dialogRef.close();
+  }
+
+  onApplyChanges() {
+    const updatedData = {
+      ...this.data.budgetData,
+      designOptions: this.optionsForm.value
+    };
+
+    this.dialogRef.close(updatedData);
+  }
+}
+
+/* export class ModalPdfPreviewComponent {
+  optionsForm: FormGroup;
+  allDisabled = false;
+
+  constructor(
+    private fb: FormBuilder,
+    public dialogRef: MatDialogRef<ModalPdfPreviewComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: { pdfUrl: string, budgetData: any, crafts: string[] }
+  ) {
     // Start with an empty form config
     const formConfig: any = {};
 
@@ -1353,7 +1408,7 @@ export class ModalPdfPreviewComponent {
 
     this.dialogRef.close(updatedData);
   }
-}
+ }*/
 /****************************************************** 
 Fin de Modal es el de PDF VIEWER
 ******************************************************/

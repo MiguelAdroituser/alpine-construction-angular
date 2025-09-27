@@ -43,7 +43,14 @@ export interface BudgetDataInterface {
     materials: MaterialsInterface[];
     consumables: ConsumablesInterface[];
 
-    designOptions?: {
+    /* designOptions?: {
     [craftName: string]: boolean;
-  };
+    }; */
+    // ✅ updated designOptions
+    designOptions?: {
+        [craftName: string]: {
+        enabled: boolean;
+        value: number;
+        };
+    };
   }

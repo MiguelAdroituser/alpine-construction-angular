@@ -4,16 +4,39 @@
   <div class="preview-container">
     
     <!-- Options column -->
-    <div class="options-panel">
+    <!-- <div class="options-panel">
       <h4>Options</h4>
-
-      <!-- 👇 Wrap all checkboxes inside a form -->
       <form [formGroup]="optionsForm">
-        <div *ngFor="let craft of data.crafts">
-          <mat-checkbox [formControlName]="craft">{{ craft }}</mat-checkbox>
+        <div *ngFor="let craft of data.crafts" [formGroupName]="craft" class="craft-row">
+          <mat-checkbox formControlName="enabled">{{ craft }}</mat-checkbox>
+          <input type="number" formControlName="value" min="0" class="value-input" />
+        </div>
+      </form>
+    </div> -->
+    <!-- <div class="options-panel">
+      <h4>
+        Options <span class="employees-label">Employees</span>
+      </h4>
+      <form [formGroup]="optionsForm">
+        <div *ngFor="let craft of data.crafts" [formGroupName]="craft" class="craft-row">
+          <mat-checkbox formControlName="enabled">{{ craft }}</mat-checkbox>
+          <input type="number" formControlName="value" min="0" class="value-input" />
+        </div>
+      </form>
+    </div> -->
+    <div class="options-panel">
+      <h4 class="options-header">
+        <span>Crafts</span>
+        <span class="employees-label">Employees</span>
+      </h4>
+      <form [formGroup]="optionsForm" class="options-form">
+        <div *ngFor="let craft of data.crafts" [formGroupName]="craft" class="craft-row">
+          <mat-checkbox formControlName="enabled">{{ craft }}</mat-checkbox>
+          <input type="number" formControlName="value" min="0" class="value-input" />
         </div>
       </form>
     </div>
+
 
     <!-- PDF Preview -->
     <div class="iframe-panel">

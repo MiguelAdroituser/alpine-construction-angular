@@ -37,3 +37,53 @@
     grid-column: span 2;
   }
 }
+
+.options-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+.options-panel h4 {
+  display: flex;
+  justify-content: space-between; /* pushes the Employees to the right */
+  align-items: center;
+}
+
+.options-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.options-header {
+  display: grid;
+  grid-template-columns: 1fr auto; /* left = Options, right = Employees */
+  align-items: center;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+.employees-label {
+  text-align: right;
+  font-weight: normal;
+}
+
+.options-form {
+  display: grid;
+  gap: 4px;
+}
+
+.craft-row {
+  display: grid;
+  grid-template-columns: auto 60px; /* checkbox+label | numeric input */
+  align-items: center;
+  gap: 8px;
+}
+
+.value-input {
+  width: 100%;
+  max-width: 60px;
+  text-align: right;
+}
+
+
