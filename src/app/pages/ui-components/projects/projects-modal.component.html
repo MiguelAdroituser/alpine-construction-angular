@@ -11,7 +11,7 @@
 
       <mat-form-field appearance="fill">
         <mat-label>Registration Date</mat-label>
-        <input matInput formControlName="registrationDate" />
+        <input matInput type="date" formControlName="registrationDate" />
         <mat-error *ngIf="form.get('registrationDate')?.hasError('required')">registrationDate is required</mat-error>
       </mat-form-field>
 
