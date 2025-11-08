@@ -278,11 +278,16 @@ export class ModalFormComponent implements OnInit{
     private apiservice: ApiService<any>, 
     @Inject(MAT_DIALOG_DATA) public data: any // Inject the data passed to the modal
   ) {
+    // Normalize the date to "YYYY-MM-DD" format for HTML5 date input
+    const normalizedDate = this.data.form.registrationDate 
+      ? this.normalizeDateForInput(this.data.form.registrationDate)
+      : this.getLocalDate();
+    
     // Initialize the form with the passed data (element)
     this.form = this.fb.group({
       _id: [this.data.form._id || ''],
-      projectName: [this.data.form.customerName || '', Validators.required],
-      registrationDate: [{ value: this.getLocalDate(), disabled: true }],
+      projectName: [this.data.form.projectName || '', Validators.required],
+      registrationDate: [normalizedDate, Validators.required],
       location: [this.data.form.location || '', Validators.required],
     });
 
@@ -299,19 +304,59 @@ export class ModalFormComponent implements OnInit{
 
   getLocalDate() {
     const date = new Date();
-    // Ajusta la hora a las 00:00 del día actual (puedes personalizar si lo deseas)
-    date.setHours(0, 0, 0, 0); 
-    return date;
+    return date.toISOString().split('T')[0]; // returns "YYYY-MM-DD"
+  }
+
+  private normalizeDateForInput(date: any): string {
+    // If it's already in "YYYY-MM-DD" format, return it as is
+    if (typeof date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(date)) {
+      return date;
+    }
+    
+    // If it's a Date object, convert to "YYYY-MM-DD"
+    if (date instanceof Date) {
+      return date.toISOString().split('T')[0];
+    }
+    
+    // If it's a string in another format, try to parse it
+    if (typeof date === 'string') {
+      const parsed = new Date(date);
+      if (!isNaN(parsed.getTime())) {
+        return parsed.toISOString().split('T')[0];
+      }
+    }
+    
+    // Fallback to current date
+    return this.getLocalDate();
   }
 
   onSubmit() {
     if (this.form.valid) {
       const formData = {
         ...this.form.value,
-        registrationDate: this.data.form.registrationDate || this.getLocalDate() // Si ya existe, usa esa; si no, genera una nueva
+        // registrationDate: this.data.form.registrationDate || this.getLocalDate() // Si ya existe, usa esa; si no, genera una nueva
+        // registrationDate: this.formatDate(this.form.value.registrationDate)
+        // registrationDate: [this.data.form.registrationDate || this.getLocalDate(), Validators.required],
+        registrationDate: this.formatDate(this.form.value.registrationDate)
       };
       this.dialogRef.close(formData);
     }
+  }
+
+  private formatDate(date: any): string {
+    // HTML5 date input returns a string in "YYYY-MM-DD" format
+    // If it's already a string, return it
+    if (typeof date === 'string') {
+      return date;
+    }
+    
+    // If it's a Date object, convert to "YYYY-MM-DD"
+    if (date instanceof Date) {
+      return date.toISOString().split('T')[0];
+    }
+    
+    // Fallback: convert to string
+    return String(date);
   }
 
   onClose() {
