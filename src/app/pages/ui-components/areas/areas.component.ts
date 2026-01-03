@@ -348,6 +348,8 @@ export class AreasComponent implements OnInit, AfterViewInit {
       return acc;
     }, {} as Record<string, { enabled: boolean; value: number }>);
 
+    console.log('project', project);
+
     const budgetData: BudgetDataInterface = {
       //customer data
       customerName: customer?.customerName,
@@ -358,6 +360,8 @@ export class AreasComponent implements OnInit, AfterViewInit {
       //project data
       projectName: project?.projectName,
       location: project?.location,
+      startProject: project?.registrationDate,
+      endProject: this.getTodayDate(),
       //Crafts - Areas
       areas: this.dataSource.data,
       materials: this.materialDataSource.data,
@@ -371,6 +375,14 @@ export class AreasComponent implements OnInit, AfterViewInit {
 
     this.openPdfPreviewModal(budgetData, crafts);
 
+  }
+
+  private getTodayDate(): string {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 
   async getProjects() {
@@ -1343,6 +1355,11 @@ export class ModalPdfPreviewComponent {
       });
     });
 
+    // 👇 NEW — End Project Date
+    formConfig['endProject'] = [
+      this.data.budgetData.endProject ?? ''   // keep previous or empty
+    ];
+
     this.optionsForm = this.fb.group(formConfig);
 
     // Watch value changes for disabling button
@@ -1360,7 +1377,8 @@ export class ModalPdfPreviewComponent {
   onApplyChanges() {
     const updatedData = {
       ...this.data.budgetData,
-      designOptions: this.optionsForm.value
+      designOptions: this.optionsForm.value,
+      endProject: this.optionsForm.value.endProject  // 👈 NEW
     };
 
     this.dialogRef.close(updatedData);

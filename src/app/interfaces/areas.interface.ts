@@ -36,6 +36,8 @@ export interface BudgetDataInterface {
     // project data
     projectName: string | undefined;
     location: string | undefined;
+    startProject: Date | string | undefined;
+    endProject: Date | string | undefined;
     // crafts - areas
     areas: AreaInterface[];
     craftsToShow?: string[];
