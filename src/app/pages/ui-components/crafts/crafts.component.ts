@@ -84,7 +84,6 @@ export class CraftsComponent implements OnInit, AfterViewInit {
   async getCrafts(){
     //const response = await this.apiService.callPostApi(url, undefined,{"postedDate": postDateToUTC}).toPromise();
     const resps = await this.apiservice.findAll('crafts').toPromise();
-    console.log({resps})
     // this.dataSource = new MatTableDataSource( resps );
     this.PRODUCT_DATA = [...resps]; // Ensure immutability
     this.dataSource.data = this.PRODUCT_DATA;
@@ -100,7 +99,6 @@ export class CraftsComponent implements OnInit, AfterViewInit {
     const resps = await this.apiservice.create('crafts/create', data).toPromise();
      */
     const result = await this.apiservice.create('crafts/create', craft).toPromise();
-    console.log('create function', result)
 
     this.getCrafts();
 
@@ -137,7 +135,6 @@ export class CraftsComponent implements OnInit, AfterViewInit {
 
     dialogRef.afterClosed().subscribe((result: any) => {
       if (result) {
-        console.log('Form Data:', result); // Aquí manejas los datos enviados desde el formulario
         
         if ( result._id === '' ) {
           this.createCraft( result );

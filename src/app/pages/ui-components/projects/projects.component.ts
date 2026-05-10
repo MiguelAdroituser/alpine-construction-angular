@@ -92,7 +92,7 @@ export class ProjectsComponent {
     
         try {
           const customers = await this.apiservice.findAll('customers').toPromise();
-          console.log({ customers });
+          
           this.customers = customers;
       
           if (customers.length > 0) {
@@ -108,7 +108,6 @@ export class ProjectsComponent {
       async getCustomers() {
         try {
           const customers = await this.apiservice.findAll('customers').toPromise();
-          console.log({ customers });
       
           if (!customers || customers.length === 0) {
             console.warn('No customers found.');
@@ -129,12 +128,10 @@ export class ProjectsComponent {
         
 
       onCustomerChange(customerId: string | null) {
-        console.log('Selected Customer ID:', customerId);
       
         // Find the selected customer object
         const selected = this.customers.find(c => c._id === customerId);
         if (selected) {
-          console.log('Selected Customer:', selected);
           // this.getAreas();
           this.getProjects();
           // Perform additional logic here (e.g., update another field)
@@ -147,7 +144,6 @@ export class ProjectsComponent {
         try {
     
           const projects = await this.apiservice.callGetApi<any>('projects', params).toPromise();
-          console.log({ projects });
           this.PRODUCT_DATA = [...projects]; // Ensure immutability
           this.dataSource.data = this.PRODUCT_DATA;
         
@@ -166,7 +162,6 @@ export class ProjectsComponent {
       
         try {
           const projects = await this.apiservice.callGetApi<any>('projects', params).toPromise();
-          console.log({ projects });
       
           if (!projects || projects.length === 0) {
             console.warn('No projects found for this customer.');
@@ -201,7 +196,6 @@ export class ProjectsComponent {
            */
           //TODO: userId
           const result = await this.apiservice.create('projects/create', {...project, customerId: this.selectedCustomer! }).toPromise();
-          console.log('create function', result)
       
           this.getProjects();
       
@@ -228,7 +222,6 @@ export class ProjectsComponent {
       
           dialogRef.afterClosed().subscribe((result: any) => {
             if (result) {
-              console.log('Form Data:', result); // Aquí manejas los datos enviados desde el formulario
               
               if ( result._id === '' ) {
                 this.createProject( result );

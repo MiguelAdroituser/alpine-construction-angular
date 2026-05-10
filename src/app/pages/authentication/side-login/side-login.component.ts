@@ -55,13 +55,10 @@ export class AppSideLoginComponent {
     }
   }
   /* submit() {
-    // console.log(this.form.value);
     this.router.navigate(['/']);
   } */
 
   async submit() {
-    
-    console.log('submit?');
 
     this.submitted = true;
 

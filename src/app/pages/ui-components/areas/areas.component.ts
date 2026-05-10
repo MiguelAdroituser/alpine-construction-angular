@@ -202,7 +202,7 @@ export class AreasComponent implements OnInit, AfterViewInit {
     try {
 
       const resps = await this.apiservice.callGetApi<any>('areas', params).toPromise();
-      console.log({ resps });
+     
       this.PRODUCT_DATA = [...resps]; // Ensure immutability
       this.dataSource.data = this.PRODUCT_DATA;
 
@@ -214,9 +214,6 @@ export class AreasComponent implements OnInit, AfterViewInit {
       console.error('Error fetching areas:', error);
     }
 
-    /*  const resps = await this.apiservice.findOne('areas', this.selectedCustomer).toPromise();
-     console.log({resps}) */
-
 
   }
 
@@ -227,8 +224,6 @@ export class AreasComponent implements OnInit, AfterViewInit {
 
     try {
       const resps = await this.apiservice.callGetApi<any>('materials', params).toPromise();
-      
-      console.log('these are materials from BD:', resps);
 
       this.MATERIAL_DATA = [ ...resps ];
       this.materialDataSource.data = this.MATERIAL_DATA;
@@ -245,7 +240,6 @@ export class AreasComponent implements OnInit, AfterViewInit {
 
     try {
       const customers = await this.apiservice.findAll('customers').toPromise();
-      console.log({ customers });
       this.customers = customers;
 
       if (customers.length > 0) {
@@ -261,7 +255,6 @@ export class AreasComponent implements OnInit, AfterViewInit {
   async createAreas(area: AreaInterface) {
 
     const result = await this.apiservice.create('areas/create', { ...area, customerId: this.selectedCustomer!, projectId: this.selectedProject! }).toPromise();
-    console.log('create function', result)
 
     this.getAreas();
 
@@ -277,12 +270,10 @@ export class AreasComponent implements OnInit, AfterViewInit {
   }
 
   onCustomerChange(customerId: string | null) {
-    console.log('Selected Customer ID:', customerId);
 
     // Find the selected customer object
     const selected = this.customers.find(c => c._id === customerId);
     if (selected) {
-      // console.log('Selected Customer:', selected);
 
       // this.getAreas();
       this.getProjects();
@@ -291,12 +282,10 @@ export class AreasComponent implements OnInit, AfterViewInit {
   }
 
   onProjectChange(projectId: string | null) {
-    // console.log('Selected Project ID:', projectId);
 
     // Find the selected project object
     const selected = this.projects.find(p => p._id === projectId);
     if (selected) {
-      // console.log('Selected Project:', selected);
 
       // Fetch areas based on the selected customer and project
       this.getAreas();
@@ -326,7 +315,6 @@ export class AreasComponent implements OnInit, AfterViewInit {
     // const crafts = this.dataSource.data.map(item => item.craft);
     const crafts = [...new Set(this.dataSource.data.map(item => item.craft))];
     
-    console.log({crafts});
   
     if ( crafts.length === 0 ) {
       console.error('No tenemos crafts');
@@ -348,7 +336,6 @@ export class AreasComponent implements OnInit, AfterViewInit {
       return acc;
     }, {} as Record<string, { enabled: boolean; value: number }>);
 
-    console.log('project', project);
 
     const budgetData: BudgetDataInterface = {
       //customer data
@@ -369,10 +356,6 @@ export class AreasComponent implements OnInit, AfterViewInit {
       designOptions
     }
 
-    console.log({budgetData});
-    console.log({designOptions});
-    
-
     this.openPdfPreviewModal(budgetData, crafts);
 
   }
@@ -391,7 +374,6 @@ export class AreasComponent implements OnInit, AfterViewInit {
     try {
 
       const projects = await this.apiservice.callGetApi<any>('projects', params).toPromise();
-      console.log({ projects });
 
       this.projects = projects; // Store the projects array
 
@@ -432,7 +414,6 @@ export class AreasComponent implements OnInit, AfterViewInit {
 
     dialogRef.afterClosed().subscribe((result: any) => {
       if (result) {
-        console.log('Form Data:', result); // Aquí manejas los datos enviados desde el formulario
 
         if (result._id === '') {
           this.createAreas(result);
@@ -486,7 +467,6 @@ export class AreasComponent implements OnInit, AfterViewInit {
   async createMaterials(material: MaterialsInterface) {
 
     const result = await this.apiservice.create('materials/create', { ...material, customerId: this.selectedCustomer!, projectId: this.selectedProject! }).toPromise();
-    console.log('create function materials:', result)
 
     // this.getAreas();
     this.getMaterials();
@@ -494,8 +474,6 @@ export class AreasComponent implements OnInit, AfterViewInit {
   }
 
   async updateMaterials(material: MaterialsInterface) {
-
-    // console.log('this is the material updating', material);
 
     const { _id } = material;
 
@@ -513,7 +491,6 @@ export class AreasComponent implements OnInit, AfterViewInit {
 
     dialogRef.afterClosed().subscribe((result: any) => {
       if (result) {
-        console.log('Form Data11:', result); // Aquí manejas los datos enviados desde el formulario
 
         if (result._id === '') {
           this.createMaterials(result);
@@ -552,7 +529,6 @@ export class AreasComponent implements OnInit, AfterViewInit {
   async createConsumables(consumable: ConsumablesInterface) {
 
     const result = await this.apiservice.create('consumables/create', { ...consumable, customerId: this.selectedCustomer!, projectId: this.selectedProject! }).toPromise();
-    console.log('create function consumables:', result)
 
     // this.getAreas();
     this.getConsumables();
@@ -566,8 +542,6 @@ export class AreasComponent implements OnInit, AfterViewInit {
 
       try {
       const resps = await this.apiservice.callGetApi<any>('consumables', params).toPromise();
-      
-      console.log('these are consumables from BD:', resps);
 
       this.CONSUMABLE_DATA= [ ...resps ];
       this.consumableDataSource.data = this.CONSUMABLE_DATA;
@@ -583,8 +557,6 @@ export class AreasComponent implements OnInit, AfterViewInit {
   }
 
   async updateConsumables( consumable: ConsumablesInterface ) {
-
-    console.log('this is the consumable updating', consumable);
 
     const { _id } = consumable;
 
@@ -603,7 +575,6 @@ export class AreasComponent implements OnInit, AfterViewInit {
 
     dialogRef.afterClosed().subscribe(( result: any ) => {
       if (result) {
-        console.log('Form consumables result:', result);
 
         if (result._id === '') {
           this.createConsumables(result);
@@ -624,7 +595,6 @@ export class AreasComponent implements OnInit, AfterViewInit {
 
   //modal
   openPdfPreviewModal(budgetData: any, crafts: string[]) {
-    console.log('budgetData modal', budgetData)
   this.http.post(`${this.apiUrl}pdf/generate`, budgetData, { responseType: 'blob' })
     .subscribe((pdfBlob: Blob) => {
       const blobUrl = window.URL.createObjectURL(pdfBlob);
@@ -637,7 +607,6 @@ export class AreasComponent implements OnInit, AfterViewInit {
 
       dialogRef.afterClosed().subscribe(result => {
         if (result) {
-          console.log('PDF modal closed with changes:', result);
           // Here you could regenerate PDF with new options
           this.openPdfPreviewModal(result, crafts);
         }
@@ -871,7 +840,6 @@ export class ModalFormComponent implements OnInit {
 
       // Subscribe to valueChanges and store the subscription
       const subscription = this.form.get(field)?.valueChanges.subscribe((isChecked: boolean) => {
-        console.log('logs');
 
         // If cantidad is empty, do nothing
         if (this.form.get('cantidad')?.value === '') return;
@@ -949,7 +917,6 @@ export class ModalFormComponent implements OnInit {
 
   unidadUsaSubscription() {
     this.bs = this.form.get('unidadUsa')?.valueChanges.subscribe(unidadUsa => {
-      // console.log('unidadUsa changes:', unidadUsa);
       if (this.isInitializing) return;
 
       // Mapping of USA to MX units
@@ -1016,7 +983,7 @@ export class ModalFormComponent implements OnInit {
   async loadCraftOptions() {
 
     const crafts = await this.apiservice.findAll('crafts').toPromise();
-    console.log({ crafts })
+    
     this.craftOptions = crafts;
   }
 
@@ -1200,7 +1167,6 @@ export class ModalFormMaterialsComponent implements OnInit {
       }
 
       //nota: esta eliminando algunas propiedades por eso no se crea 
-      console.log({ formValue })
 
       this.dialogMaterialRef.close(formValue); // Cierra el modal y pasa los datos
     }
@@ -1262,7 +1228,6 @@ export class ModalFormConsumablesComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
-    console.log('oninit cylce of consumables form.');
     await this.loadCraftOptions();
     this.craftIdSuscription();
   }
@@ -1270,7 +1235,6 @@ export class ModalFormConsumablesComponent implements OnInit {
   async loadCraftOptions() {
 
     const crafts = await this.apiservice.findAll('crafts').toPromise();
-    //console.log({ crafts })
     this.craftOptions = crafts;
   }
 
@@ -1297,8 +1261,6 @@ export class ModalFormConsumablesComponent implements OnInit {
   onSubmit() {
     if ( this.consumablesForm.valid ) {
       const formValue = { ...this.consumablesForm.value };
-
-      console.log('form value of consumables form', formValue);
 
       this.dialogConsumableRef.close( formValue );
     }

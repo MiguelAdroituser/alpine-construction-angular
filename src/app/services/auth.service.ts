@@ -34,7 +34,6 @@ export class AuthService {
       .pipe(
         map(response => {
         //   this.isAdmin = response.isAdmin;
-        console.log('login response', response);
           this.token = response.accessToken;
 
           //OBTENEMOS EL TOKEN
@@ -52,7 +51,6 @@ export class AuthService {
             userName: response.username
           };
 
-          console.log({userMetadata})
 
           const currentDate = new Date();
           const futureDate = new Date(currentDate.getTime() + Number(userMetadata.ttl)*1000);

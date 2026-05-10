@@ -121,9 +121,9 @@ export class PruebaDTModalesComponent implements OnInit, AfterViewInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        console.log('Form Data:', result); // Aquí manejas los datos enviados desde el formulario
+        //console.log('Form Data:', result); // Aquí manejas los datos enviados desde el formulario
       } else {
-        console.log('Modal closed without data');
+        //console.log('Modal closed without data');
       }
     });
   }
